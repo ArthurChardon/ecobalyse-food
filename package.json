@@ -1,0 +1,19 @@
+{
+  "name": "ecobalyse-food",
+  "version": "1.0.0",
+  "description": "Compute eco footprint of food recipes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArthurChardon/ecobalyse-food.git"
+  },
+  "author": "Arthur Chardon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArthurChardon/ecobalyse-food/issues"
+  },
+  "homepage": "https://github.com/ArthurChardon/ecobalyse-food#readme"
+}

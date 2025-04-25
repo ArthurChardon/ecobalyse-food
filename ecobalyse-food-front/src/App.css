@@ -1,0 +1,28 @@
+:root {
+  --grey-white: #f8f8ff;
+  --jet-black: #16161b;
+  --forest-green: #068922;
+  --schoolbus-yellow: #FFDF0E;
+  --engineering-orange: #CB1616;
+  --shadow-color: 0deg 0% 61%;
+  --shadow-elevation-low:
+    0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
+    0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34),
+    1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
+  --shadow-elevation-medium: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.36),
+    0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / 0.36),
+    2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / 0.36),
+    5px 10px 12.6px -2.5px hsl(var(--shadow-color) / 0.36);
+
+  --green-score-a-plus: #1E8F4E;
+  --green-score-a: #1E8F4E;
+  --green-score-b: #2ECC71;
+  --green-score-c: #F5C100;
+  --green-score-d: #EF7E1A;
+  --green-score-e: #DE4523;
+  --green-score-f: #BF3122;
+}
+
+:root {
+  background-color: var(--grey-white);
+}

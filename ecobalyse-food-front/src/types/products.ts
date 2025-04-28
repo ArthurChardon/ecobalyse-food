@@ -1,3 +1,5 @@
+import { BonusScores } from "./scores";
+
 export type ProductCategory = {
   id: number;
   name: string;
@@ -14,12 +16,18 @@ export class Product {
   category: ProductCategory | null = null;
   quantity: number = 0; // in kilograms
   baseScore = -1;
-  bonusScore = 0;
+  bonusScore: BonusScores = {
+    production: 0,
+    transport: 0,
+    packaging: 0,
+    speciesThreatened: 0,
+  };
 
   labels: ProductLabel[] = [];
 
   constructor() {
     this.id = crypto.randomUUID();
+    this.quantity = 0.1;
   }
 
   computeBaseScoreFromCategory() {
@@ -31,4 +39,35 @@ export class Product {
         Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
         20;
   }
+
+  computeBonusScore() {
+    this.bonusScore.production = 0;
+    if (this.labels.length) {
+      const appliedLabelsName: string[] = [];
+      const productionBonus = this.labels.reduce((acc, label) => {
+        if (acc === 20 || !canCumulateLabel(appliedLabelsName, label.name)) {
+          return acc;
+        }
+        appliedLabelsName.push(label.name);
+        return Math.min(acc + label.bonus, 20);
+      }, 0);
+      this.bonusScore.production = productionBonus;
+    } else {
+      //TODO: score by country: https://docs.score-environnemental.com/methodologie/produit/systeme-de-production/origine
+    }
+  }
 }
+
+const canCumulateLabel = (appliedLabels: string[], label: string): boolean => {
+  const cumulativeLabels = ["ASC", "MSC"];
+  if (cumulativeLabels.includes(label)) {
+    for (let i = 0; i < cumulativeLabels.length; i++) {
+      const cumulativeLabel = cumulativeLabels[i];
+      if (appliedLabels.includes(cumulativeLabel)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return true;
+};

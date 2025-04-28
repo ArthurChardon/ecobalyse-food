@@ -5,7 +5,11 @@ import ProductForm from "../Product/ProductForm";
 import { Button } from "../ui/button";
 
 const RecipeForm = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([new Product()]);
+  const [recipeScore, setRecipeScore] = useState<{
+    baseScore: number;
+    productionBonus: number;
+  } | null>(null);
 
   const recipe = useRef(new Recipe([]));
 
@@ -32,11 +36,16 @@ const RecipeForm = () => {
   const computeScore = () => {
     console.log(recipe.current);
     recipe.current.computeBaseScore();
+    recipe.current.computeProductionBonus();
+    setRecipeScore({
+      baseScore: recipe.current.baseScore,
+      productionBonus: recipe.current.bonusScore.production,
+    });
   };
 
   return (
     <>
-      <div className="flex flex-col items-center">
+      <div className="grid grid-cols-3">
         {products.map((product) => (
           <ProductForm
             key={product.id}
@@ -54,6 +63,12 @@ const RecipeForm = () => {
         <Button onClick={() => addProduct()}>Add product</Button>
         <Button onClick={() => computeScore()}>Compute score</Button>
       </div>
+      {!!recipeScore && (
+        <>
+          <div>Base score: {recipeScore?.baseScore.toFixed(2)}</div>
+          <div>Production bonus:{recipeScore?.productionBonus}</div>
+        </>
+      )}
     </>
   );
 };

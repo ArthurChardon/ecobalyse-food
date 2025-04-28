@@ -1,10 +1,15 @@
 import { Product } from "./products";
-import { GreenScore } from "./scores";
+import { BonusScores, GreenScore } from "./scores";
 
 export class Recipe {
   products: Product[] = [];
   baseScore = -1;
-  bonusScore = 0;
+  bonusScore: BonusScores = {
+    production: 0,
+    transport: 0,
+    packaging: 0,
+    speciesThreatened: 0,
+  };
   greenScore: GreenScore | null = null;
 
   constructor(products: Product[]) {
@@ -32,9 +37,21 @@ export class Recipe {
       (Math.log(10 * recipePoints + 1) /
         Math.log(2 + 1 / (100 * Math.pow(recipePoints, 4)))) *
         20;
-
-    console.log("Recipe base score: ", this.baseScore);
   }
 
-  public computeLabelBonus() {}
+  public computeProductionBonus() {
+    const totalMass = this.products.reduce((acc, product) => {
+      return acc + product.quantity;
+    }, 0);
+    console.log("products", this.products);
+    const recipeProductionBonus = this.products.reduce((acc, product) => {
+      if (!product.category) return acc;
+      product.computeBonusScore();
+      return (
+        acc + (product.bonusScore.production * product.quantity) / totalMass
+      );
+    }, 0);
+    this.bonusScore.production = recipeProductionBonus;
+    console.log(recipeProductionBonus);
+  }
 }

@@ -64,7 +64,7 @@ const ProductForm = ({
   };
 
   return (
-    <form>
+    <form className="bg-background m-[1rem] p-[1rem]">
       <div className="mb-3">
         <label htmlFor="category" className="product-form-label">
           Category
@@ -72,6 +72,7 @@ const ProductForm = ({
         <Combobox
           options={categories.map((category) => category.name)}
           visibleOptionsLimit={20}
+          placeholder="Select your product's category"
           onChange={(value) => {
             categorySelected(value);
           }}
@@ -83,6 +84,7 @@ const ProductForm = ({
       <div className="mb-3">
         <label className="product-form-label">Labels</label>
         <MultiSelect
+          placeholder="Select your product's labels"
           options={productLabels.map((label) => ({
             label: label.name,
             value: label.name,

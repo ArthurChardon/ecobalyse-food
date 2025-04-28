@@ -35,4 +35,6 @@ export class Recipe {
 
     console.log("Recipe base score: ", this.baseScore);
   }
+
+  public computeLabelBonus() {}
 }

@@ -16,14 +16,10 @@ export class Product {
   baseScore = -1;
   bonusScore = 0;
 
-  label: ProductLabel | null = null;
+  labels: ProductLabel[] = [];
 
   constructor() {
     this.id = crypto.randomUUID();
-  }
-
-  setLabel(label: ProductLabel) {
-    this.label = label;
   }
 
   computeBaseScoreFromCategory() {

@@ -1,23 +1,39 @@
-import { useState } from "react";
+import { BaseSyntheticEvent, useState } from "react";
 import { Input } from "../ui/input";
 import "./ProductForm.css";
 import { Product } from "@/types/products";
 import { Combobox } from "../ui/combobox";
 import { Button } from "../ui/button";
 import { useProductAttributes } from "@/context/ProductAttributesContext";
+import { MultiSelect } from "../ui/multiselect";
 
 const ProductForm = ({
   product,
+  updateProduct,
   removeProduct,
 }: {
   product: Product;
+  updateProduct: (product: Product) => void;
   removeProduct: () => void;
 }) => {
   const [categoryScore, setCategoryScore] = useState<number>(0);
   const { categories, labels: productLabels } = useProductAttributes();
 
-  const labelSelected = (value: string) => {
-    console.log("Label selected", value);
+  const quantitySelected = (value: string) => {
+    product.quantity = +value;
+    updateProduct(product);
+  };
+
+  const labelsSelected = (values: string[]) => {
+    const selectedLabel = productLabels.filter((label) =>
+      values.includes(label.name)
+    );
+    if (selectedLabel) {
+      product.labels = selectedLabel;
+      updateProduct(product);
+    } else {
+      console.error("Category not found");
+    }
   };
 
   const categorySelected = (value: string) => {
@@ -29,6 +45,8 @@ const ProductForm = ({
       (category) => category.name === value
     );
     if (selectedCategory) {
+      product.category = selectedCategory;
+      updateProduct(product);
       setCategoryScore(computeBaseScoreFromPoints(selectedCategory.agbScore));
     } else {
       setCategoryScore(0);
@@ -48,17 +66,6 @@ const ProductForm = ({
   return (
     <form>
       <div className="mb-3">
-        <label htmlFor="productName" className="product-form-label">
-          Name
-        </label>
-        <Input
-          type="text"
-          className="form-control"
-          id="productName"
-          placeholder="ex: Nutella"
-        />
-      </div>
-      <div className="mb-3">
         <label htmlFor="category" className="product-form-label">
           Category
         </label>
@@ -75,10 +82,28 @@ const ProductForm = ({
       </div>
       <div className="mb-3">
         <label className="product-form-label">Labels</label>
-        <Combobox
-          options={productLabels.map((label) => label.name)}
-          onChange={(value) => labelSelected(value)}
-        ></Combobox>
+        <MultiSelect
+          options={productLabels.map((label) => ({
+            label: label.name,
+            value: label.name,
+          }))}
+          onValueChange={(value) => labelsSelected(value)}
+        ></MultiSelect>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="quantity" className="product-form-label">
+          Quantity (kg)
+        </label>
+        <Input
+          type="number"
+          className="form-control"
+          id="quantity"
+          placeholder="ex: 1.5"
+          defaultValue={product.quantity}
+          onInput={(event: BaseSyntheticEvent) =>
+            quantitySelected(event.target.value)
+          }
+        />
       </div>
       <Button onClick={() => removeProduct()}>Remove product</Button>
     </form>

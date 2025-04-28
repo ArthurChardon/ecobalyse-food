@@ -1,3 +1,4 @@
+import { greenScoreFromScore } from "@/utils/scores.utils";
 import { Product } from "./products";
 import { BonusScores, GreenScore } from "./scores";
 
@@ -43,7 +44,6 @@ export class Recipe {
     const totalMass = this.products.reduce((acc, product) => {
       return acc + product.quantity;
     }, 0);
-    console.log("products", this.products);
     const recipeProductionBonus = this.products.reduce((acc, product) => {
       if (!product.category) return acc;
       product.computeBonusScore();
@@ -52,6 +52,10 @@ export class Recipe {
       );
     }, 0);
     this.bonusScore.production = recipeProductionBonus;
-    console.log(recipeProductionBonus);
+  }
+
+  public computeGreenScore() {
+    const totalScore = this.baseScore + this.bonusScore.production;
+    this.greenScore = greenScoreFromScore(totalScore);
   }
 }

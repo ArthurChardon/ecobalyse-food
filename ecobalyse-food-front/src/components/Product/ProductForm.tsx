@@ -55,11 +55,16 @@ const ProductForm = ({
   };
 
   const computeBaseScoreFromPoints = (points: number): number => {
-    return (
-      100 -
-      (Math.log(10 * points + 1) /
-        Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
-        20
+    // points > 3.1 => 0
+    return Math.max(
+      0,
+      Math.min(
+        100,
+        100 -
+          (Math.log(10 * points + 1) /
+            Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
+            20
+      )
     );
   };
 
@@ -77,7 +82,7 @@ const ProductForm = ({
             categorySelected(value);
           }}
         ></Combobox>
-        {categoryScore > 0 && (
+        {categoryScore >= 0 && (
           <div>Category base score: {categoryScore.toFixed(2)}</div>
         )}
       </div>

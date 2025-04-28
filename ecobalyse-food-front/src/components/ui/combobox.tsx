@@ -37,13 +37,11 @@ function Combobox({
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const displayedLabel = React.useMemo(() => {
-    console.log("selectedValue", selectedOption);
     if (!selectedOption) return "";
     return options.find((option) => option === selectedOption);
   }, [selectedOption, options]);
   // Filter options based on search query
   const filteredOptions = React.useMemo(() => {
-    console.log("searchQuery", searchQuery);
     if (!searchQuery) return options;
 
     return options.filter((option) =>

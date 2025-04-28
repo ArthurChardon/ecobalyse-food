@@ -1,0 +1,60 @@
+{
+  "labels": [
+    {
+      "name": "Nature & Progrès",
+      "bonus": 20
+    },
+    {
+      "name": "Bio Cohérence",
+      "bonus": 20
+    },
+    {
+      "name": "Demeter",
+      "bonus": 20
+    },
+    {
+      "name": "Bio + Equitable",
+      "bonus": 20
+    },
+    {
+      "name": "EU Bio",
+      "bonus": 15
+    },
+    {
+      "name": "AB Agriculture Biologique",
+      "bonus": 15
+    },
+    {
+      "name": "HVE",
+      "bonus": 10
+    },
+    {
+      "name": "UTZ",
+      "bonus": 10
+    },
+    {
+      "name": "Rainforest Alliance",
+      "bonus": 10
+    },
+    {
+      "name": "Fairtrade",
+      "bonus": 10
+    },
+    {
+      "name": "BBC",
+      "bonus": 10
+    },
+    {
+      "name": "ASC",
+      "bonus": 10
+    },
+    {
+      "name": "MSC",
+      "bonus": 10
+    },
+    {
+      "name": "Label Rouge",
+      "bonus": 10
+    }
+  ]
+}

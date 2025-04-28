@@ -1,12 +1,13 @@
 import "./App.css";
-import Product from "./components/Product/Product";
+import { ProductAttributesProvider } from "./context/ProductAttributesContext";
+import RecipeForm from "./components/RecipeForm/RecipeForm";
 
 function App() {
   return (
     <>
-      <div className="flex flex-col items-center">
-        <Product />
-      </div>
+      <ProductAttributesProvider>
+        <RecipeForm></RecipeForm>
+      </ProductAttributesProvider>
     </>
   );
 }

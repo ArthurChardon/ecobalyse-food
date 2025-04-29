@@ -49,7 +49,7 @@ const RecipeForm = () => {
 
   return (
     <>
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-[1rem]">
         {products.map((product) => (
           <ProductForm
             key={product.id}
@@ -70,14 +70,14 @@ const RecipeForm = () => {
       {!!recipeScore && (
         <>
           <div className="flex items-center gap-[.5rem]">
-            Green score: {recipeScore.greenScore?.value}{" "}
+            Green score: {recipeScore.greenScore?.value.toFixed(1)}{" "}
             <img
               src={"picto-" + recipeScore.greenScore?.letter + ".svg"}
               height={30}
               width={30}
             ></img>
           </div>
-          <div>Base score: {recipeScore?.baseScore.toFixed(2)}</div>
+          <div>Base score: {recipeScore?.baseScore.toFixed(1)}</div>
           <div>Production bonus: {recipeScore?.productionBonus.toFixed(0)}</div>
           <div>Transport bonus: {recipeScore?.transportBonus.toFixed(0)}</div>
         </>

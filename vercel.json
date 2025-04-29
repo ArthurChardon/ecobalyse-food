@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ecobalyse-food-front/dist/index.html",
+      "use": "@vercel/node"
+    }
+  ],
+  "buildCommand": "npm install --prefix ecobalyse-food-front && npm run build --prefix ecobalyse-food-front"
+}

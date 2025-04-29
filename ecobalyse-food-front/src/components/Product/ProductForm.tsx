@@ -16,7 +16,7 @@ const ProductForm = ({
   updateProduct: (product: Product) => void;
   removeProduct: () => void;
 }) => {
-  const [categoryScore, setCategoryScore] = useState<number>(0);
+  const [categoryScore, setCategoryScore] = useState<number>(-1);
   const { categories, labels: productLabels } = useProductAttributes();
 
   const quantitySelected = (value: string) => {

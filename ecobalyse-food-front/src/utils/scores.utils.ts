@@ -1,6 +1,6 @@
-import { GreenScore } from "@/types/scores";
+import { GreenScoreLetter } from "@/types/scores";
 
-export const greenScoreFromScore = (score: number): GreenScore => {
+export const greenScoreLetterFromScore = (score: number): GreenScoreLetter => {
   if (score >= 90) return "A+";
   if (score >= 75) return "A";
   if (score >= 60) return "B";

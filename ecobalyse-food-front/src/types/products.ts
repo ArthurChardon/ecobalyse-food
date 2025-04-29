@@ -1,5 +1,6 @@
 import { canCumulateLabel } from "@/utils/products.utils";
 import { Country } from "./countries";
+import { MAX_PRODUCT_LABEL_BONUS } from "./constants";
 
 export type ProductBonuses = {
   production: number;
@@ -50,20 +51,33 @@ export class Product {
         20;
   }
 
-  computeBonusScore() {
+  computeProductionBonusScore() {
     this.bonusScore.production = 0;
     if (this.labels.length) {
+      // if labels are present
       const appliedLabelsName: string[] = [];
       const productionBonus = this.labels.reduce((acc, label) => {
-        if (acc === 20 || !canCumulateLabel(appliedLabelsName, label.name)) {
+        if (
+          acc === MAX_PRODUCT_LABEL_BONUS ||
+          !canCumulateLabel(appliedLabelsName, label.name)
+        ) {
           return acc;
         }
         appliedLabelsName.push(label.name);
-        return Math.min(acc + label.bonus, 20);
+        return Math.min(MAX_PRODUCT_LABEL_BONUS, acc + label.bonus);
       }, 0);
       this.bonusScore.production = productionBonus;
     } else {
-      //TODO: score by country: https://docs.score-environnemental.com/methodologie/produit/systeme-de-production/origine
+      // else compute score from origin country
+      this.bonusScore.production = this.origin?.originScore
+        ? this.origin.originScore / 10 - 5
+        : 0;
     }
+  }
+
+  computeTransportBonusScore() {
+    this.bonusScore.transport = this.origin?.transportScore
+      ? this.origin.transportScore * 0.15
+      : 0;
   }
 }

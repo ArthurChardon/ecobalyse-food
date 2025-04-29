@@ -1,6 +1,7 @@
-import { greenScoreFromScore } from "@/utils/scores.utils";
+import { greenScoreLetterFromScore } from "@/utils/scores.utils";
 import { Product } from "./products";
 import { GreenScore } from "./scores";
+import { MAX_RECIPE_BONUS } from "./constants";
 
 export type RecipeBonuses = {
   production: number;
@@ -33,6 +34,12 @@ export class Recipe {
     this.products = this.products.filter((p) => p !== product);
   }
 
+  public computeFullScores() {
+    this.computeBaseScore();
+    this.computeBonusScore();
+    this.computeGreenScore();
+  }
+
   public computeBaseScore() {
     const totalMass = this.products.reduce((acc, product) => {
       return acc + product.quantity;
@@ -49,13 +56,18 @@ export class Recipe {
         20;
   }
 
+  public computeBonusScore() {
+    this.computeProductionBonus();
+    this.computeTransportBonus();
+  }
+
   public computeProductionBonus() {
     const totalMass = this.products.reduce((acc, product) => {
       return acc + product.quantity;
     }, 0);
     const recipeProductionBonus = this.products.reduce((acc, product) => {
       if (!product.category) return acc;
-      product.computeBonusScore();
+      product.computeProductionBonusScore();
       return (
         acc + (product.bonusScore.production * product.quantity) / totalMass
       );
@@ -63,8 +75,32 @@ export class Recipe {
     this.bonusScore.production = recipeProductionBonus;
   }
 
+  public computeTransportBonus() {
+    const totalMass = this.products.reduce((acc, product) => {
+      return acc + product.quantity;
+    }, 0);
+    const recipeTransportBonus = this.products.reduce((acc, product) => {
+      if (!product.category) return acc;
+      product.computeTransportBonusScore();
+      return (
+        acc + (product.bonusScore.transport * product.quantity) / totalMass
+      );
+    }, 0);
+    this.bonusScore.transport = recipeTransportBonus;
+  }
+
   public computeGreenScore() {
-    const totalScore = this.baseScore + this.bonusScore.production;
-    this.greenScore = greenScoreFromScore(totalScore);
+    const totalScore =
+      this.baseScore +
+      Math.min(
+        MAX_RECIPE_BONUS,
+        this.bonusScore.production + this.bonusScore.transport
+      );
+    const rangedScore = Math.max(0, Math.min(100, totalScore));
+
+    this.greenScore = {
+      letter: greenScoreLetterFromScore(rangedScore),
+      value: rangedScore,
+    };
   }
 }

@@ -11,6 +11,7 @@ const RecipeForm = () => {
     greenScore: GreenScore | null;
     baseScore: number;
     productionBonus: number;
+    transportBonus: number;
   } | null>(null);
 
   const recipe = useRef(new Recipe([]));
@@ -37,13 +38,12 @@ const RecipeForm = () => {
 
   const computeScore = () => {
     console.log(recipe.current);
-    recipe.current.computeBaseScore();
-    recipe.current.computeProductionBonus();
-    recipe.current.computeGreenScore();
+    recipe.current.computeFullScores();
     setRecipeScore({
       greenScore: recipe.current.greenScore,
       baseScore: recipe.current.baseScore,
       productionBonus: recipe.current.bonusScore.production,
+      transportBonus: recipe.current.bonusScore.transport,
     });
   };
 
@@ -70,15 +70,16 @@ const RecipeForm = () => {
       {!!recipeScore && (
         <>
           <div className="flex items-center gap-[.5rem]">
-            Green score:
+            Green score: {recipeScore.greenScore?.value}{" "}
             <img
-              src={"picto-" + recipeScore.greenScore + ".svg"}
+              src={"picto-" + recipeScore.greenScore?.letter + ".svg"}
               height={30}
               width={30}
             ></img>
           </div>
           <div>Base score: {recipeScore?.baseScore.toFixed(2)}</div>
-          <div>Production bonus:{recipeScore?.productionBonus}</div>
+          <div>Production bonus: {recipeScore?.productionBonus.toFixed(0)}</div>
+          <div>Transport bonus: {recipeScore?.transportBonus.toFixed(0)}</div>
         </>
       )}
     </>

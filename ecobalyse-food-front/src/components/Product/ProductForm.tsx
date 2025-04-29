@@ -72,24 +72,24 @@ const ProductForm = ({
     <form className="bg-background m-[1rem] p-[1rem]">
       <div className="mb-3">
         <label htmlFor="category" className="product-form-label">
-          Category
+          Catégorie
         </label>
         <Combobox
           options={categories.map((category) => category.name)}
           visibleOptionsLimit={20}
-          placeholder="Select your product's category"
+          placeholder="ex: Carotte, crue"
           onChange={(value) => {
             categorySelected(value);
           }}
         ></Combobox>
         {categoryScore >= 0 && (
-          <div>Category base score: {categoryScore.toFixed(2)}</div>
+          <div>Catégorie base score: {categoryScore.toFixed(2)}</div>
         )}
       </div>
       <div className="mb-3">
         <label className="product-form-label">Labels</label>
         <MultiSelect
-          placeholder="Select your product's labels"
+          placeholder="ex: Fairtrade"
           options={productLabels.map((label) => ({
             label: label.name,
             value: label.name,
@@ -99,7 +99,7 @@ const ProductForm = ({
       </div>
       <div className="mb-3">
         <label htmlFor="quantity" className="product-form-label">
-          Quantity (kg)
+          Quantité (kg)
         </label>
         <Input
           type="number"
@@ -112,7 +112,7 @@ const ProductForm = ({
           }
         />
       </div>
-      <Button onClick={() => removeProduct()}>Remove product</Button>
+      <Button onClick={() => removeProduct()}>Retirer produit</Button>
     </form>
   );
 };

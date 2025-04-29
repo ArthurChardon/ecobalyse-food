@@ -1,5 +1,11 @@
 import { canCumulateLabel } from "@/utils/products.utils";
-import { BonusScores } from "./scores";
+
+export type ProductBonuses = {
+  production: number;
+  transport: number;
+  packaging: number;
+  speciesThreatened: number | "E";
+};
 
 export type ProductCategory = {
   id: number;
@@ -15,9 +21,11 @@ export type ProductLabel = {
 export class Product {
   id: string;
   category: ProductCategory | null = null;
-  quantity: number = 0; // in kilograms
+  quantity = 0; // in kilograms
+  origin: string | null = null;
+
   baseScore = -1;
-  bonusScore: BonusScores = {
+  bonusScore: ProductBonuses = {
     production: 0,
     transport: 0,
     packaging: 0,

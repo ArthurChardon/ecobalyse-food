@@ -64,8 +64,8 @@ const RecipeForm = () => {
         ))}
       </div>
       <div className="flex gap-[1rem] justify-center my-[1rem]">
-        <Button onClick={() => addProduct()}>Add product</Button>
-        <Button onClick={() => computeScore()}>Compute score</Button>
+        <Button onClick={() => addProduct()}>Ajouter produit</Button>
+        <Button onClick={() => computeScore()}>Calculer Score</Button>
       </div>
       {!!recipeScore && (
         <>

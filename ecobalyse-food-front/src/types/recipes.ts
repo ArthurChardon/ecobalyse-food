@@ -1,14 +1,23 @@
 import { greenScoreFromScore } from "@/utils/scores.utils";
 import { Product } from "./products";
-import { BonusScores, GreenScore } from "./scores";
+import { GreenScore } from "./scores";
+
+export type RecipeBonuses = {
+  production: number;
+  transport: number;
+  packaging: number;
+  season: number;
+  speciesThreatened: number;
+};
 
 export class Recipe {
   products: Product[] = [];
   baseScore = -1;
-  bonusScore: BonusScores = {
+  bonusScore: RecipeBonuses = {
     production: 0,
     transport: 0,
     packaging: 0,
+    season: 0,
     speciesThreatened: 0,
   };
   greenScore: GreenScore | null = null;

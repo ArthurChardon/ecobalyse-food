@@ -28,7 +28,7 @@
   background-color: var(--grey-white);
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  scrollbar-width: thin;
 }
 
 body {

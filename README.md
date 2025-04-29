@@ -17,3 +17,14 @@ Features:
 - compare recipes
 
 front shadcn add component: npx shadcn@latest add button
+
+approvisionnement local France:
+https://docs.score-environnemental.com/methodologie/produit/transport => 0 à 15pts
+https://docs.score-environnemental.com/methodologie-recette/bonus-malus-recette/origine => -10 à 5pts
+
+examples: https://docs.score-environnemental.com/methodologie-recette/exemples
+
+todo:
+-poisson, zones de pêches, espèces menacées
+-bonus/malus emballages
+-bonus/malus saisonnalité

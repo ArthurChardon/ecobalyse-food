@@ -106,7 +106,7 @@ const ProductForm = ({
             <Combobox
               options={categories.map((category) => category.name)}
               visibleOptionsLimit={20}
-              placeholder="ex: Carotte, crue"
+              placeholder="ex: Biscuit de Savoie"
               onChange={(value) => {
                 categorySelected(value);
               }}
@@ -179,7 +179,7 @@ const ProductForm = ({
         </form>
       </CardContent>
       <CardFooter>
-        <Button className="bg-destructive" onClick={() => removeProduct()}>
+        <Button variant="destructive" onClick={() => removeProduct()}>
           Retirer produit
         </Button>
       </CardFooter>

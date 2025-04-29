@@ -17,7 +17,13 @@ const ProductForm = ({
   removeProduct: () => void;
 }) => {
   const [categoryScore, setCategoryScore] = useState<number>(-1);
-  const { categories, labels: productLabels } = useProductAttributes();
+  const [originScore, setOriginScore] = useState<number>(-1);
+  const [transportScore, setTransportScore] = useState<number>(-1);
+  const {
+    categories,
+    labels: productLabels,
+    countries,
+  } = useProductAttributes();
 
   const quantitySelected = (value: string) => {
     product.quantity = +value;
@@ -36,9 +42,28 @@ const ProductForm = ({
     }
   };
 
+  const countrySelected = (value: string) => {
+    if (!value) {
+      setOriginScore(-1);
+      setTransportScore(-1);
+      return;
+    }
+    const selectedCountry = countries.find((country) => country.name === value);
+    if (selectedCountry) {
+      product.origin = selectedCountry;
+      updateProduct(product);
+      setOriginScore(selectedCountry.originScore ?? -1);
+      setTransportScore(selectedCountry.transportScore ?? -1);
+    } else {
+      setOriginScore(-1);
+      setTransportScore(-1);
+      console.error("Category not found");
+    }
+  };
+
   const categorySelected = (value: string) => {
     if (!value) {
-      setCategoryScore(0);
+      setCategoryScore(-1);
       return;
     }
     const selectedCategory = categories.find(
@@ -49,7 +74,7 @@ const ProductForm = ({
       updateProduct(product);
       setCategoryScore(computeBaseScoreFromPoints(selectedCategory.agbScore));
     } else {
-      setCategoryScore(0);
+      setCategoryScore(-1);
       console.error("Category not found");
     }
   };
@@ -96,6 +121,25 @@ const ProductForm = ({
           }))}
           onValueChange={(value) => labelsSelected(value)}
         ></MultiSelect>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="origin" className="product-form-label">
+          Origine
+        </label>
+        <Combobox
+          options={countries.map((country) => country.name)}
+          visibleOptionsLimit={20}
+          placeholder="ex: France"
+          onChange={(value) => {
+            countrySelected(value);
+          }}
+        ></Combobox>
+        {originScore >= 0 && (
+          <div>Country origin score: {originScore.toFixed(2)}</div>
+        )}
+        {transportScore >= 0 && (
+          <div>Country transport score: {transportScore.toFixed(2)}</div>
+        )}
       </div>
       <div className="mb-3">
         <label htmlFor="quantity" className="product-form-label">

@@ -1,4 +1,5 @@
 import { canCumulateLabel } from "@/utils/products.utils";
+import { Country } from "./countries";
 
 export type ProductBonuses = {
   production: number;
@@ -22,7 +23,7 @@ export class Product {
   id: string;
   category: ProductCategory | null = null;
   quantity = 0; // in kilograms
-  origin: string | null = null;
+  origin: Country | null = null;
 
   baseScore = -1;
   bonusScore: ProductBonuses = {

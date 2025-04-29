@@ -29,6 +29,7 @@ export function ProductAttributesProvider({
         return res.text();
       });
       try {
+        console.log("fileContent", fileContent);
         const newCategories: ProductCategory[] = [];
         const trackLabels: string[] = [];
         const trackDuplicates: string[] = [];

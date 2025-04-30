@@ -1,6 +1,5 @@
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent } from "react";
 import { Input } from "../ui/input";
-import "./ProductForm.css";
 import { Product } from "@/types/products";
 import { Combobox } from "../ui/combobox";
 import { Button } from "../ui/button";
@@ -8,6 +7,8 @@ import { useProductAttributes } from "@/context/ProductAttributesContext";
 import { MultiSelect } from "../ui/multiselect";
 import InfoTooltip from "../ui/info-tooltip";
 import { Card, CardContent, CardFooter } from "../ui/card";
+
+import "./ProductForm.css";
 
 const ProductForm = ({
   product,
@@ -18,9 +19,6 @@ const ProductForm = ({
   updateProduct: (product: Product) => void;
   removeProduct: () => void;
 }) => {
-  const [categoryScore, setCategoryScore] = useState<number>(-1);
-  const [originScore, setOriginScore] = useState<number>(-1);
-  const [transportScore, setTransportScore] = useState<number>(-1);
   const {
     categories,
     labels: productLabels,
@@ -59,26 +57,19 @@ const ProductForm = ({
 
   const countrySelected = (value: string) => {
     if (!value) {
-      setOriginScore(-1);
-      setTransportScore(-1);
       return;
     }
     const selectedCountry = countries.find((country) => country.name === value);
     if (selectedCountry) {
       product.origin = selectedCountry;
       updateProduct(product);
-      setOriginScore(selectedCountry.originScore ?? -1);
-      setTransportScore(selectedCountry.transportScore ?? -1);
     } else {
-      setOriginScore(-1);
-      setTransportScore(-1);
       console.error("Category not found");
     }
   };
 
   const categorySelected = (value: string) => {
     if (!value) {
-      setCategoryScore(-1);
       return;
     }
     const selectedCategory = categories.find(
@@ -87,25 +78,9 @@ const ProductForm = ({
     if (selectedCategory) {
       product.category = selectedCategory;
       updateProduct(product);
-      setCategoryScore(computeBaseScoreFromPoints(selectedCategory.agbScore));
     } else {
-      setCategoryScore(-1);
       console.error("Category not found");
     }
-  };
-
-  const computeBaseScoreFromPoints = (points: number): number => {
-    // points > 3.1 => 0
-    return Math.max(
-      0,
-      Math.min(
-        100,
-        100 -
-          (Math.log(10 * points + 1) /
-            Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
-            20
-      )
-    );
   };
 
   return (
@@ -124,9 +99,6 @@ const ProductForm = ({
                 categorySelected(value);
               }}
             ></Combobox>
-            {categoryScore >= 0 && (
-              <div>Catégorie base score: {categoryScore.toFixed(2)}</div>
-            )}
           </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
@@ -167,12 +139,6 @@ const ProductForm = ({
                 countrySelected(value);
               }}
             ></Combobox>
-            {originScore >= 0 && (
-              <div>Country origin score: {originScore.toFixed(2)}</div>
-            )}
-            {transportScore >= 0 && (
-              <div>Country transport score: {transportScore.toFixed(2)}</div>
-            )}
           </div>
           <div className="mb-3">
             <label htmlFor="quantity" className="product-form-label">

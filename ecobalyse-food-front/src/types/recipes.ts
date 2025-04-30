@@ -109,7 +109,9 @@ export class Recipe {
       this.baseScore +
       Math.min(
         MAX_RECIPE_BONUS,
-        this.bonusScore.production + this.bonusScore.transport
+        this.bonusScore.production +
+          this.bonusScore.transport +
+          this.bonusScore.packaging
       );
     const rangedScore = Math.max(0, Math.min(100, totalScore));
 

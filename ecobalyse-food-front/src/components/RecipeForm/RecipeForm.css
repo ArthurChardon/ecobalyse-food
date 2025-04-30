@@ -1,0 +1,34 @@
+.results-sidebar {
+    h2 {
+        text-align: center;
+        font-family: BalooCheetan2;
+        font-size: 2rem;
+        line-height: 100%;
+        font-weight: 700;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        font-family: BalooCheetan2;
+        font-weight: 700;
+    }
+
+    h4 {
+        font-family: BalooCheetan2;
+        font-weight: 700;
+    }
+
+    strong {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .main-result {
+        font-family: BalooCheetan2;
+        font-size: 1rem;
+
+        strong {
+            font-size: 2rem;
+        }
+    }
+}

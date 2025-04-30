@@ -1,2 +1,3 @@
 export const MAX_RECIPE_BONUS = 25;
 export const MAX_PRODUCT_LABEL_BONUS = 20;
+export const MAX_PRODUCT_PACKAGING_MALUS = -15;

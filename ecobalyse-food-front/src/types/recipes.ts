@@ -59,6 +59,7 @@ export class Recipe {
   public computeBonusScore() {
     this.computeProductionBonus();
     this.computeTransportBonus();
+    this.computePackagingBonus();
   }
 
   public computeProductionBonus() {
@@ -87,6 +88,20 @@ export class Recipe {
       );
     }, 0);
     this.bonusScore.transport = recipeTransportBonus;
+  }
+
+  public computePackagingBonus() {
+    const totalMass = this.products.reduce((acc, product) => {
+      return acc + product.quantity;
+    }, 0);
+    const recipePackagingBonus = this.products.reduce((acc, product) => {
+      if (!product.category) return acc;
+      product.computePackagingBonusScore();
+      return (
+        acc + (product.bonusScore.packaging * product.quantity) / totalMass
+      );
+    }, 0);
+    this.bonusScore.packaging = recipePackagingBonus;
   }
 
   public computeGreenScore() {

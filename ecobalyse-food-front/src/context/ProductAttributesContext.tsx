@@ -1,5 +1,9 @@
 import { Country } from "@/types/countries";
-import { ProductCategory, ProductLabel } from "@/types/products";
+import {
+  ProductCategory,
+  ProductLabel,
+  ProductPackaging,
+} from "@/types/products";
 import {
   createContext,
   ReactNode,
@@ -12,6 +16,7 @@ interface ProductAttributesContextType {
   categories: ProductCategory[];
   labels: ProductLabel[];
   countries: Country[];
+  packagings: ProductPackaging[];
 }
 
 const ProductAttributesContext =
@@ -25,6 +30,7 @@ export function ProductAttributesProvider({
   const [labels, setLabels] = useState<ProductLabel[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [packagings, setPackagings] = useState<ProductPackaging[]>([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -164,15 +170,29 @@ export function ProductAttributesProvider({
         console.error("Error fetching countries:", error);
       }
     };
+    const fetchPackagings = async () => {
+      const fileContent = await fetch("packagings-ref.json").then((res) => {
+        return res.json();
+      });
+      try {
+        const newPackagings: ProductPackaging[] =
+          fileContent.packagings as ProductPackaging[];
+        setPackagings(newPackagings);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
     fetchLabels();
     fetchCategories();
     fetchCountries();
+    fetchPackagings();
   }, []);
 
   const value = {
     categories,
     labels,
     countries,
+    packagings,
   };
 
   return (

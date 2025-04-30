@@ -19,6 +19,7 @@ const RecipeForm = () => {
     baseScore: number;
     productionBonus: number;
     transportBonus: number;
+    packagingBonus: number;
   } | null>(null);
 
   const recipe = useRef(new Recipe([]));
@@ -51,6 +52,7 @@ const RecipeForm = () => {
       baseScore: recipe.current.baseScore,
       productionBonus: recipe.current.bonusScore.production,
       transportBonus: recipe.current.bonusScore.transport,
+      packagingBonus: recipe.current.bonusScore.packaging,
     });
   };
 
@@ -105,6 +107,9 @@ const RecipeForm = () => {
                 </div>
                 <div>
                   Transport bonus: {recipeScore?.transportBonus.toFixed(0)}
+                </div>
+                <div>
+                  Packaging bonus: {recipeScore?.packagingBonus.toFixed(0)}
                 </div>
               </>
             )}

@@ -25,6 +25,7 @@ const ProductForm = ({
     categories,
     labels: productLabels,
     countries,
+    packagings,
   } = useProductAttributes();
 
   const quantitySelected = (value: string) => {
@@ -32,12 +33,24 @@ const ProductForm = ({
     updateProduct(product);
   };
 
+  const packagingSelected = (values: string[]) => {
+    const selectedPackagings = packagings.filter((packaging) =>
+      values.includes(packaging.format)
+    );
+    if (selectedPackagings) {
+      product.packagings = selectedPackagings;
+      updateProduct(product);
+    } else {
+      console.error("Packaging not found");
+    }
+  };
+
   const labelsSelected = (values: string[]) => {
-    const selectedLabel = productLabels.filter((label) =>
+    const selectedLabels = productLabels.filter((label) =>
       values.includes(label.name)
     );
-    if (selectedLabel) {
-      product.labels = selectedLabel;
+    if (selectedLabels) {
+      product.labels = selectedLabels;
       updateProduct(product);
     } else {
       console.error("Category not found");
@@ -176,6 +189,27 @@ const ProductForm = ({
               }
             />
           </div>
+          <div className="flex gap-[.5rem] items-center">
+            <label htmlFor="packaging" className="product-form-label">
+              Emballages
+            </label>
+            <InfoTooltip>
+              <p>
+                L'emballage alimentaire a un impact selon sa matière première
+                ainsi que sa fin de vie.
+              </p>
+            </InfoTooltip>
+          </div>
+          <MultiSelect
+            options={packagings.map((packaging) => ({
+              label: packaging.format,
+              value: packaging.format,
+            }))}
+            placeholder="ex: Barquette en carton"
+            onValueChange={(values) => {
+              packagingSelected(values);
+            }}
+          ></MultiSelect>
         </form>
       </CardContent>
       <CardFooter>

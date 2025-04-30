@@ -1,6 +1,9 @@
 import { canCumulateLabel } from "@/utils/products.utils";
 import { Country } from "./countries";
-import { MAX_PRODUCT_LABEL_BONUS } from "./constants";
+import {
+  MAX_PRODUCT_LABEL_BONUS,
+  MAX_PRODUCT_PACKAGING_MALUS,
+} from "./constants";
 
 export type ProductBonuses = {
   production: number;
@@ -20,9 +23,15 @@ export type ProductLabel = {
   bonus: number;
 };
 
+export type ProductPackaging = {
+  format: string;
+  bonus: number;
+};
+
 export class Product {
   id: string;
   category: ProductCategory | null = null;
+  packagings: ProductPackaging[] = [];
   quantity = 0; // in kilograms
   origin: Country | null = null;
 
@@ -79,5 +88,12 @@ export class Product {
     this.bonusScore.transport = this.origin?.transportScore
       ? this.origin.transportScore * 0.15
       : 0;
+  }
+
+  computePackagingBonusScore() {
+    this.bonusScore.packaging =
+      this.packagings.reduce((acc, packaging) => {
+        return Math.max(MAX_PRODUCT_PACKAGING_MALUS, acc + packaging.bonus);
+      }, 0) ?? 0;
   }
 }

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ArthurChardon/ecobalyse-food/issues"
   },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
   "homepage": "https://github.com/ArthurChardon/ecobalyse-food#readme"
 }

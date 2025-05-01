@@ -32,8 +32,9 @@ export class Product {
   id: string;
   category: ProductCategory | null = null;
   packagings: ProductPackaging[] = [];
-  quantity = 0; // in kilograms
+  quantity: number; // in kilograms
   origin: Country | null = null;
+  active: boolean;
 
   baseScore = -1;
   bonusScore: ProductBonuses = {
@@ -48,6 +49,7 @@ export class Product {
   constructor() {
     this.id = crypto.randomUUID();
     this.quantity = 0.1;
+    this.active = true;
   }
 
   computeBaseScoreFromCategory() {

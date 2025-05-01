@@ -9,6 +9,8 @@ import InfoTooltip from "../ui/info-tooltip";
 import { Card, CardContent, CardFooter } from "../ui/card";
 
 import "./ProductForm.css";
+import { CircleMinus } from "lucide-react";
+import { Checkbox } from "../ui/checkbox";
 
 const ProductForm = ({
   product,
@@ -83,26 +85,40 @@ const ProductForm = ({
     }
   };
 
+  const toggleActiveProduct = () => {
+    product.active = !product.active;
+    updateProduct(product);
+  };
+
   return (
-    <Card>
+    <Card className={product.active ? "" : "opacity-60"}>
       <CardContent>
-        <form>
+        <form className="relative">
+          <Checkbox
+            className="absolute top-0 right-0"
+            aria-label="actif"
+            checked={product.active}
+            onCheckedChange={() => toggleActiveProduct()}
+          ></Checkbox>
           <div className="mb-3">
             <label htmlFor="category" className="product-form-label">
               Catégorie
             </label>
             <Combobox
+              name="category"
               options={categories.map((category) => category.name)}
               visibleOptionsLimit={20}
               placeholder="ex: Biscuit de Savoie"
               onChange={(value) => {
-                categorySelected(value);
+                categorySelected(value as string);
               }}
             ></Combobox>
           </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
-              <label className="product-form-label">Labels</label>
+              <label className="product-form-label" htmlFor="labels">
+                Labels
+              </label>
               <InfoTooltip>
                 <p>
                   Les labels justifient de bénéfices environnementaux sur la
@@ -111,6 +127,7 @@ const ProductForm = ({
               </InfoTooltip>
             </div>
             <MultiSelect
+              name="labels"
               placeholder="ex: Demeter, Fairtrade"
               options={productLabels.map((label) => ({
                 label: label.name,
@@ -132,11 +149,12 @@ const ProductForm = ({
               </InfoTooltip>
             </div>
             <Combobox
+              name="origin"
               options={countries.map((country) => country.name)}
               visibleOptionsLimit={20}
               placeholder="ex: France"
               onChange={(value) => {
-                countrySelected(value);
+                countrySelected(value as string);
               }}
             ></Combobox>
           </div>
@@ -180,7 +198,7 @@ const ProductForm = ({
       </CardContent>
       <CardFooter>
         <Button variant="destructive" onClick={() => removeProduct()}>
-          Retirer produit
+          Retirer produit <CircleMinus></CircleMinus>
         </Button>
       </CardFooter>
     </Card>

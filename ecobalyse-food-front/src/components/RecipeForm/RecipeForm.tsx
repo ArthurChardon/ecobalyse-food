@@ -11,14 +11,9 @@ import {
   SidebarHeader,
   SidebarTrigger,
 } from "../ui/sidebar";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
 import "./RecipeForm.css";
-import { Separator } from "../ui/separator";
+import { ChartBar, CirclePlus } from "lucide-react";
+import RecipeResults from "./RecipeResults/RecipeResults";
 
 const RecipeForm = () => {
   const [products, setProducts] = useState<Product[]>([new Product()]);
@@ -31,6 +26,7 @@ const RecipeForm = () => {
   } | null>(null);
 
   const recipe = useRef(new Recipe([]));
+  const resultsComputed = useRef(false);
 
   const addProduct = () => {
     const newProduct = new Product();
@@ -45,14 +41,17 @@ const RecipeForm = () => {
     recipe.current.products = products.map((p) =>
       p.id === updatedProduct.id ? updatedProduct : p
     );
+    if (resultsComputed.current) computeScore();
   };
 
   const removeProduct = (product: Product) => {
     setProducts((prevProducts) => prevProducts.filter((p) => p !== product));
     recipe.current.removeProduct(product);
+    if (resultsComputed.current) computeScore();
   };
 
   const computeScore = () => {
+    resultsComputed.current = true;
     console.log(recipe.current);
     recipe.current.products.forEach((product) => {
       product.computeBaseScoreFromCategory();
@@ -88,7 +87,7 @@ const RecipeForm = () => {
             variant="secondary"
             onClick={() => addProduct()}
           >
-            Ajouter produit
+            Ajouter un produit <CirclePlus></CirclePlus>
           </Button>
         </div>
       </main>
@@ -99,132 +98,58 @@ const RecipeForm = () => {
       <Sidebar className="results-sidebar" side="right">
         <SidebarHeader className="p-3">
           <div className="flex gap-[.5rem] justify-between">
-            <img src={"picto-A+.svg"} height={30} width={30}></img>
-            <img src={"picto-A.svg"} height={30} width={30}></img>
-            <img src={"picto-B.svg"} height={30} width={30}></img>
-            <img src={"picto-C.svg"} height={30} width={30}></img>
-            <img src={"picto-D.svg"} height={30} width={30}></img>
-            <img src={"picto-E.svg"} height={30} width={30}></img>
-            <img src={"picto-F.svg"} height={30} width={30}></img>
+            <img
+              src={"picto-A+.svg"}
+              height={30}
+              width={30}
+              alt="A+ GreenScore"
+            ></img>
+            <img
+              src={"picto-A.svg"}
+              height={30}
+              width={30}
+              alt="A GreenScore"
+            ></img>
+            <img
+              src={"picto-B.svg"}
+              height={30}
+              width={30}
+              alt="B GreenScore"
+            ></img>
+            <img
+              src={"picto-C.svg"}
+              height={30}
+              width={30}
+              alt="C GreenScore"
+            ></img>
+            <img
+              src={"picto-D.svg"}
+              height={30}
+              width={30}
+              alt="D GreenScore"
+            ></img>
+            <img
+              src={"picto-E.svg"}
+              height={30}
+              width={30}
+              alt="E GreenScore"
+            ></img>
+            <img
+              src={"picto-F.svg"}
+              height={30}
+              width={30}
+              alt="F GreenScore"
+            ></img>
           </div>
           <Button size="lg" onClick={() => computeScore()}>
-            Calculer Score
+            Calculer le Green Score <ChartBar></ChartBar>
           </Button>
         </SidebarHeader>
         <SidebarContent>
-          <div className="flex flex-col pb-2 grow gap-[1rem]">
-            {!!recipeScore && (
-              <>
-                <Separator></Separator>
-                <div className="bg-secondary rounded-[.625rem] px-2 pt-2">
-                  <h3>Produits</h3>
-                  <Accordion type="single" collapsible>
-                    {products
-                      .filter((product) => product.category)
-                      .map((product) => (
-                        <AccordionItem
-                          key={product.id}
-                          value={product.id}
-                          className="flex flex-col py-[.5rem] w-full"
-                        >
-                          <AccordionTrigger className="w-full">
-                            <h4 className="truncate">
-                              {product.category?.name}
-                            </h4>
-                            <span className="min-w-max ml-auto">
-                              {product.quantity} kg
-                            </span>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="flex justify-between">
-                              Produit:{" "}
-                              <span>{product.baseScore.toFixed(1)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              Production:{" "}
-                              <span>
-                                {product.bonusScore.production > 0 ? "+" : ""}
-                                {product.bonusScore.production.toFixed(1)}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              Transport:{" "}
-                              <span>
-                                {product.bonusScore.transport > 0 ? "+" : ""}
-                                {product.bonusScore.transport.toFixed(1)}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              Emballage:{" "}
-                              <span>
-                                {product.bonusScore.packaging > 0 ? "+" : ""}
-                                {product.bonusScore.packaging.toFixed(1)}
-                              </span>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                  </Accordion>
-                </div>
-                <Separator></Separator>
-                <div className="bg-secondary rounded-[.625rem] px-2 pt-2">
-                  <h3 className="">Recette</h3>
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="1">
-                      <AccordionTrigger className="flex items-center">
-                        <strong>
-                          Green score:{" "}
-                          {recipeScore.greenScore?.value.toFixed(1)}{" "}
-                        </strong>
-                        <img
-                          className="ml-auto"
-                          src={
-                            "picto-" + recipeScore.greenScore?.letter + ".svg"
-                          }
-                          height={30}
-                          width={30}
-                        ></img>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <div>
-                          Base score: {recipeScore?.baseScore.toFixed(1)}
-                        </div>
-                        <div>
-                          Bonus production:{" "}
-                          {recipeScore?.productionBonus.toFixed(0)}
-                        </div>
-                        <div>
-                          Bonus transport:{" "}
-                          {recipeScore?.transportBonus.toFixed(0)}
-                        </div>
-                        <div>
-                          Malus emballage:{" "}
-                          {recipeScore?.packagingBonus.toFixed(0)}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </div>
-              </>
-            )}
-            <Separator className="mt-auto"></Separator>
-            <div className="bg-secondary rounded-[.625rem] py-4 px-2">
-              {recipeScore && (
-                <div className="flex items-center justify-around">
-                  <span className="main-result">
-                    <strong>{recipeScore.greenScore?.value.toFixed(1)}</strong>{" "}
-                    / 100
-                  </span>
-                  <img
-                    src={"picto-" + recipeScore.greenScore?.letter + ".svg"}
-                    height={60}
-                    width={60}
-                  ></img>
-                </div>
-              )}
-            </div>
-            <Separator></Separator>
-          </div>
+          <RecipeResults
+            recipeScore={recipeScore}
+            products={products}
+          ></RecipeResults>
         </SidebarContent>
         <SidebarFooter>
           <div className="flex items-center justify-center gap-[.5rem] opacity-50">
@@ -232,6 +157,7 @@ const RecipeForm = () => {
             <a
               className="underline"
               href="https://docs.score-environnemental.com/"
+              target="_blank"
             >
               GreenScore
             </a>

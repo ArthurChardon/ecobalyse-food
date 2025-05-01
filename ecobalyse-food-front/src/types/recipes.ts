@@ -41,11 +41,9 @@ export class Recipe {
   }
 
   public computeBaseScore() {
-    const totalMass = this.products.reduce((acc, product) => {
-      return acc + product.quantity;
-    }, 0);
+    const totalMass = this.computeTotalMass();
     const recipePoints = this.products.reduce((acc, product) => {
-      if (!product.category) return acc;
+      if (!product.category || !product.active) return acc;
       return acc + (product.category.agbScore * product.quantity) / totalMass;
     }, 0);
 
@@ -63,11 +61,9 @@ export class Recipe {
   }
 
   public computeProductionBonus() {
-    const totalMass = this.products.reduce((acc, product) => {
-      return acc + product.quantity;
-    }, 0);
+    const totalMass = this.computeTotalMass();
     const recipeProductionBonus = this.products.reduce((acc, product) => {
-      if (!product.category) return acc;
+      if (!product.category || !product.active) return acc;
       product.computeProductionBonusScore();
       return (
         acc + (product.bonusScore.production * product.quantity) / totalMass
@@ -77,11 +73,9 @@ export class Recipe {
   }
 
   public computeTransportBonus() {
-    const totalMass = this.products.reduce((acc, product) => {
-      return acc + product.quantity;
-    }, 0);
+    const totalMass = this.computeTotalMass();
     const recipeTransportBonus = this.products.reduce((acc, product) => {
-      if (!product.category) return acc;
+      if (!product.category || !product.active) return acc;
       product.computeTransportBonusScore();
       return (
         acc + (product.bonusScore.transport * product.quantity) / totalMass
@@ -91,11 +85,9 @@ export class Recipe {
   }
 
   public computePackagingBonus() {
-    const totalMass = this.products.reduce((acc, product) => {
-      return acc + product.quantity;
-    }, 0);
+    const totalMass = this.computeTotalMass();
     const recipePackagingBonus = this.products.reduce((acc, product) => {
-      if (!product.category) return acc;
+      if (!product.category || !product.active) return acc;
       product.computePackagingBonusScore();
       return (
         acc + (product.bonusScore.packaging * product.quantity) / totalMass
@@ -119,5 +111,12 @@ export class Recipe {
       letter: greenScoreLetterFromScore(rangedScore),
       value: rangedScore,
     };
+  }
+
+  public computeTotalMass() {
+    return this.products.reduce((acc, product) => {
+      if (!product.active) return acc;
+      return acc + product.quantity;
+    }, 0);
   }
 }

@@ -25,13 +25,14 @@ function Combobox({
   searchPlaceholder = "Search...",
   visibleOptionsLimit = 5,
   onChange,
+  ...props
 }: {
   options: string[];
   placeholder?: string;
   searchPlaceholder?: string;
   visibleOptionsLimit?: number;
   onChange?: (value: string) => void;
-}) {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const [open, setOpen] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState<string>("");
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -72,6 +73,7 @@ function Combobox({
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
+          {...props}
         >
           <span
             className={
@@ -111,8 +113,8 @@ function Combobox({
               ))}
               {filteredOptions.length > visibleOptionsLimit && (
                 <div className="py-2 px-2 text-xs text-muted-foreground text-center">
-                  {filteredOptions.length - visibleOptionsLimit} more options
-                  available. Refine your search to see more.
+                  {filteredOptions.length - visibleOptionsLimit} options
+                  supplémentaires disponibles.
                 </div>
               )}
             </CommandGroup>

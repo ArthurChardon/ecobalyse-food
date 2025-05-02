@@ -115,7 +115,7 @@ export class Recipe {
 
   public computeTotalMass() {
     return this.products.reduce((acc, product) => {
-      if (!product.active) return acc;
+      if (!product.category || !product.active) return acc;
       return acc + product.quantity;
     }, 0);
   }

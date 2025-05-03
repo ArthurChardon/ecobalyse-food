@@ -34,63 +34,63 @@ const ProductForm = ({
   const productQuantityInGrams = useRef(100);
   const [isFishing, setIsFishing] = useState(false);
 
-  const quantitySelected = (value: string) => {
+  const quantitySelected = (value: string, productToUpdate: Product) => {
     productQuantityInGrams.current = +value;
-    product.quantity = productQuantityInGrams.current / 1000;
-    updateProduct(product);
+    productToUpdate.quantity = productQuantityInGrams.current / 1000;
+    updateProduct(productToUpdate);
   };
 
-  const packagingSelected = (values: string[]) => {
+  const packagingSelected = (values: string[], productToUpdate: Product) => {
     const selectedPackagings = packagings.filter((packaging) =>
       values.includes(packaging.format)
     );
     if (selectedPackagings) {
-      product.packagings = selectedPackagings;
-      updateProduct(product);
+      productToUpdate.packagings = selectedPackagings;
+      updateProduct(productToUpdate);
     } else {
       console.error("Packaging not found");
     }
   };
 
-  const labelsSelected = (values: string[]) => {
+  const labelsSelected = (values: string[], productToUpdate: Product) => {
     const selectedLabels = productLabels.filter((label) =>
       values.includes(label.name)
     );
     if (selectedLabels) {
-      product.labels = selectedLabels;
-      updateProduct(product);
+      productToUpdate.labels = selectedLabels;
+      updateProduct(productToUpdate);
     } else {
       console.error("Category not found");
     }
   };
 
-  const countrySelected = (value: string) => {
+  const countrySelected = (value: string, productToUpdate: Product) => {
     if (!value) {
       return;
     }
     const selectedCountry = countries.find((country) => country.name === value);
     if (selectedCountry) {
-      product.origin = selectedCountry;
-      updateProduct(product);
+      productToUpdate.origin = selectedCountry;
+      updateProduct(productToUpdate);
     } else {
       console.error("Country not found");
     }
   };
 
-  const faoZoneSelected = (value: string) => {
+  const faoZoneSelected = (value: string, productToUpdate: Product) => {
     if (!value) {
       return;
     }
     const selectedFaoZone = faoZones.find((faoZone) => faoZone.ocean === value);
     if (selectedFaoZone) {
-      product.origin = selectedFaoZone;
-      updateProduct(product);
+      productToUpdate.origin = selectedFaoZone;
+      updateProduct(productToUpdate);
     } else {
       console.error("FAO Zone not found");
     }
   };
 
-  const categorySelected = (value: string) => {
+  const categorySelected = (value: string, productToUpdate: Product) => {
     if (!value) {
       return;
     }
@@ -98,46 +98,55 @@ const ProductForm = ({
       (category) => category.name === value
     );
     if (selectedCategory) {
-      product.category = selectedCategory;
-      updateProduct(product);
+      productToUpdate.category = selectedCategory;
+      updateProduct(productToUpdate);
     } else {
       console.error("Category not found");
     }
   };
 
-  const theratenedSpeciesSelected = (values: string[]) => {
+  const theratenedSpeciesSelected = (
+    values: string[],
+    productToUpdate: Product
+  ) => {
     const selectedThreatenedSpecies = threatenedSpecies.filter((species) =>
       values.includes(species.species)
     );
     if (selectedThreatenedSpecies) {
-      product.threatenedSpecies = selectedThreatenedSpecies;
-      updateProduct(product);
+      productToUpdate.threatenedSpecies = selectedThreatenedSpecies;
+      updateProduct(productToUpdate);
     } else {
       console.error("Threatened species not found");
     }
   };
 
-  const hasPalmOilCheck = (check: boolean | string) => {
-    product.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
+  const hasPalmOilCheck = (
+    check: boolean | string,
+    productToUpdate: Product
+  ) => {
+    productToUpdate.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
     hasPalmOil.current = !!check;
-    updateProduct(product);
+    updateProduct(productToUpdate);
   };
 
-  const certifiedPalmOilCheck = (check: boolean | string) => {
-    product.nonRspoOilPalm = check ? false : hasPalmOil.current;
+  const certifiedPalmOilCheck = (
+    check: boolean | string,
+    productToUpdate: Product
+  ) => {
+    productToUpdate.nonRspoOilPalm = check ? false : hasPalmOil.current;
     certifiedPalmOil.current = !!check;
-    updateProduct(product);
+    updateProduct(productToUpdate);
   };
 
-  const toggleActiveProduct = () => {
-    product.active = !product.active;
-    updateProduct(product);
+  const toggleActiveProduct = (productToUpdate: Product) => {
+    productToUpdate.active = !productToUpdate.active;
+    updateProduct(productToUpdate);
   };
 
-  const toggleIsFishing = () => {
+  const toggleIsFishing = (productToUpdate: Product) => {
     setIsFishing(!isFishing);
-    product.origin = null;
-    updateProduct(product);
+    productToUpdate.origin = null;
+    updateProduct(productToUpdate);
   };
 
   return (
@@ -148,7 +157,7 @@ const ProductForm = ({
             className="absolute top-0 right-0"
             aria-label="actif"
             checked={product.active}
-            onCheckedChange={() => toggleActiveProduct()}
+            onCheckedChange={() => toggleActiveProduct(product)}
           ></Checkbox>
           <div className="mb-3">
             <label htmlFor="category" className="product-form-label">
@@ -160,7 +169,7 @@ const ProductForm = ({
               visibleOptionsLimit={20}
               placeholder="ex: Biscuit de Savoie"
               onChange={(value) => {
-                categorySelected(value as string);
+                categorySelected(value as string, product);
               }}
             ></Combobox>
           </div>
@@ -183,12 +192,15 @@ const ProductForm = ({
                 label: label.name,
                 value: label.name,
               }))}
-              onValueChange={(value) => labelsSelected(value)}
+              onValueChange={(value) => labelsSelected(value, product)}
             ></MultiSelect>
           </div>
           <div className="mb-3 flex gap-[.5rem] items-center">
             <label htmlFor="is-fishing">Produit de la pêche</label>
-            <Checkbox id="is-fishing" onCheckedChange={() => toggleIsFishing()}>
+            <Checkbox
+              id="is-fishing"
+              onCheckedChange={() => toggleIsFishing(product)}
+            >
               {" "}
             </Checkbox>
           </div>
@@ -211,7 +223,7 @@ const ProductForm = ({
                 visibleOptionsLimit={20}
                 placeholder="ex: Atlantique Sud-Est"
                 onChange={(value) => {
-                  faoZoneSelected(value as string);
+                  faoZoneSelected(value as string, product);
                 }}
               ></Combobox>
             ) : (
@@ -221,7 +233,7 @@ const ProductForm = ({
                 visibleOptionsLimit={20}
                 placeholder="ex: France"
                 onChange={(value) => {
-                  countrySelected(value as string);
+                  countrySelected(value as string, product);
                 }}
               ></Combobox>
             )}
@@ -237,7 +249,7 @@ const ProductForm = ({
               placeholder="ex: 100"
               defaultValue={productQuantityInGrams.current}
               onInput={(event: BaseSyntheticEvent) =>
-                quantitySelected(event.target.value)
+                quantitySelected(event.target.value, product)
               }
             />
           </div>
@@ -261,13 +273,16 @@ const ProductForm = ({
               placeholder="ex: Barquette en carton"
               id="packaging"
               onValueChange={(values) => {
-                packagingSelected(values);
+                packagingSelected(values, product);
               }}
             ></MultiSelect>
           </div>
           <div className="mb-3 flex gap-[.5rem] items-center">
             <label htmlFor="palm-oil">Contient de l'huile de palme</label>
-            <Checkbox id="palm-oil" onCheckedChange={(e) => hasPalmOilCheck(e)}>
+            <Checkbox
+              id="palm-oil"
+              onCheckedChange={(e) => hasPalmOilCheck(e, product)}
+            >
               {" "}
             </Checkbox>
           </div>
@@ -278,7 +293,7 @@ const ProductForm = ({
               </label>
               <Checkbox
                 id="certified-palm-oil"
-                onCheckedChange={(e) => certifiedPalmOilCheck(e)}
+                onCheckedChange={(e) => certifiedPalmOilCheck(e, product)}
               >
                 {" "}
               </Checkbox>
@@ -310,7 +325,7 @@ const ProductForm = ({
               placeholder="ex: Thon Rouge"
               id="threatened-species"
               onValueChange={(values) => {
-                theratenedSpeciesSelected(values);
+                theratenedSpeciesSelected(values, product);
               }}
             ></MultiSelect>
           </div>

@@ -34,63 +34,63 @@ const ProductForm = ({
   const productQuantityInGrams = useRef(100);
   const [isFishing, setIsFishing] = useState(false);
 
-  const quantitySelected = (value: string, productToUpdate: Product) => {
+  const quantitySelected = (value: string) => {
     productQuantityInGrams.current = +value;
-    productToUpdate.quantity = productQuantityInGrams.current / 1000;
-    updateProduct(productToUpdate);
+    product.quantity = productQuantityInGrams.current / 1000;
+    updateProduct(product);
   };
 
-  const packagingSelected = (values: string[], productToUpdate: Product) => {
+  const packagingSelected = (values: string[]) => {
     const selectedPackagings = packagings.filter((packaging) =>
       values.includes(packaging.format)
     );
     if (selectedPackagings) {
-      productToUpdate.packagings = selectedPackagings;
-      updateProduct(productToUpdate);
+      product.packagings = selectedPackagings;
+      updateProduct(product);
     } else {
       console.error("Packaging not found");
     }
   };
 
-  const labelsSelected = (values: string[], productToUpdate: Product) => {
+  const labelsSelected = (values: string[]) => {
     const selectedLabels = productLabels.filter((label) =>
       values.includes(label.name)
     );
     if (selectedLabels) {
-      productToUpdate.labels = selectedLabels;
-      updateProduct(productToUpdate);
+      product.labels = selectedLabels;
+      updateProduct(product);
     } else {
       console.error("Category not found");
     }
   };
 
-  const countrySelected = (value: string, productToUpdate: Product) => {
+  const countrySelected = (value: string) => {
     if (!value) {
       return;
     }
     const selectedCountry = countries.find((country) => country.name === value);
     if (selectedCountry) {
-      productToUpdate.origin = selectedCountry;
-      updateProduct(productToUpdate);
+      product.origin = selectedCountry;
+      updateProduct(product);
     } else {
       console.error("Country not found");
     }
   };
 
-  const faoZoneSelected = (value: string, productToUpdate: Product) => {
+  const faoZoneSelected = (value: string) => {
     if (!value) {
       return;
     }
     const selectedFaoZone = faoZones.find((faoZone) => faoZone.ocean === value);
     if (selectedFaoZone) {
-      productToUpdate.origin = selectedFaoZone;
-      updateProduct(productToUpdate);
+      product.origin = selectedFaoZone;
+      updateProduct(product);
     } else {
       console.error("FAO Zone not found");
     }
   };
 
-  const categorySelected = (value: string, productToUpdate: Product) => {
+  const categorySelected = (value: string) => {
     if (!value) {
       return;
     }
@@ -98,55 +98,46 @@ const ProductForm = ({
       (category) => category.name === value
     );
     if (selectedCategory) {
-      productToUpdate.category = selectedCategory;
-      updateProduct(productToUpdate);
+      product.category = selectedCategory;
+      updateProduct(product);
     } else {
       console.error("Category not found");
     }
   };
 
-  const theratenedSpeciesSelected = (
-    values: string[],
-    productToUpdate: Product
-  ) => {
+  const theratenedSpeciesSelected = (values: string[]) => {
     const selectedThreatenedSpecies = threatenedSpecies.filter((species) =>
       values.includes(species.species)
     );
     if (selectedThreatenedSpecies) {
-      productToUpdate.threatenedSpecies = selectedThreatenedSpecies;
-      updateProduct(productToUpdate);
+      product.threatenedSpecies = selectedThreatenedSpecies;
+      updateProduct(product);
     } else {
       console.error("Threatened species not found");
     }
   };
 
-  const hasPalmOilCheck = (
-    check: boolean | string,
-    productToUpdate: Product
-  ) => {
-    productToUpdate.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
+  const hasPalmOilCheck = (check: boolean | string) => {
+    product.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
     hasPalmOil.current = !!check;
-    updateProduct(productToUpdate);
+    updateProduct(product);
   };
 
-  const certifiedPalmOilCheck = (
-    check: boolean | string,
-    productToUpdate: Product
-  ) => {
-    productToUpdate.nonRspoOilPalm = check ? false : hasPalmOil.current;
+  const certifiedPalmOilCheck = (check: boolean | string) => {
+    product.nonRspoOilPalm = check ? false : hasPalmOil.current;
     certifiedPalmOil.current = !!check;
-    updateProduct(productToUpdate);
+    updateProduct(product);
   };
 
-  const toggleActiveProduct = (productToUpdate: Product) => {
-    productToUpdate.active = !productToUpdate.active;
-    updateProduct(productToUpdate);
+  const toggleActiveProduct = () => {
+    product.active = !product.active;
+    updateProduct(product);
   };
 
-  const toggleIsFishing = (productToUpdate: Product) => {
+  const toggleIsFishing = () => {
     setIsFishing(!isFishing);
-    productToUpdate.origin = null;
-    updateProduct(productToUpdate);
+    product.origin = null;
+    updateProduct(product);
   };
 
   return (
@@ -157,25 +148,32 @@ const ProductForm = ({
             className="absolute top-0 right-0"
             aria-label="actif"
             checked={product.active}
-            onCheckedChange={() => toggleActiveProduct(product)}
+            onCheckedChange={() => toggleActiveProduct()}
           ></Checkbox>
           <div className="mb-3">
-            <label htmlFor="category" className="product-form-label">
+            <label
+              htmlFor={"category--" + product.id}
+              className="product-form-label"
+            >
               Catégorie
             </label>
             <Combobox
               name="category"
+              id={"category--" + product.id}
               options={categories.map((category) => category.name)}
               visibleOptionsLimit={20}
               placeholder="ex: Biscuit de Savoie"
               onChange={(value) => {
-                categorySelected(value as string, product);
+                categorySelected(value as string);
               }}
             ></Combobox>
           </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
-              <label className="product-form-label" htmlFor="labels">
+              <label
+                className="product-form-label"
+                htmlFor={"labels--" + product.id}
+              >
                 Labels
               </label>
               <InfoTooltip>
@@ -187,26 +185,32 @@ const ProductForm = ({
             </div>
             <MultiSelect
               name="labels"
+              id={"labels--" + product.id}
               placeholder="ex: Demeter, Fairtrade"
               options={productLabels.map((label) => ({
                 label: label.name,
                 value: label.name,
               }))}
-              onValueChange={(value) => labelsSelected(value, product)}
+              onValueChange={(value) => labelsSelected(value)}
             ></MultiSelect>
           </div>
           <div className="mb-3 flex gap-[.5rem] items-center">
-            <label htmlFor="is-fishing">Produit de la pêche</label>
+            <label htmlFor={"is-fishing--" + product.id}>
+              Produit de la pêche
+            </label>
             <Checkbox
-              id="is-fishing"
-              onCheckedChange={() => toggleIsFishing(product)}
+              id={"is-fishing--" + product.id}
+              onCheckedChange={() => toggleIsFishing()}
             >
               {" "}
             </Checkbox>
           </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
-              <label htmlFor="origin" className="product-form-label">
+              <label
+                htmlFor={"origin--" + product.id}
+                className="product-form-label"
+              >
                 Origine
               </label>
               <InfoTooltip>
@@ -218,44 +222,52 @@ const ProductForm = ({
             </div>
             {isFishing ? (
               <Combobox
+                id={"origin--" + product.id}
                 name="origin"
                 options={faoZones.map((faoZone) => faoZone.ocean)}
                 visibleOptionsLimit={20}
                 placeholder="ex: Atlantique Sud-Est"
                 onChange={(value) => {
-                  faoZoneSelected(value as string, product);
+                  faoZoneSelected(value as string);
                 }}
               ></Combobox>
             ) : (
               <Combobox
+                id={"origin--" + product.id}
                 name="origin"
                 options={countries.map((country) => country.name)}
                 visibleOptionsLimit={20}
                 placeholder="ex: France"
                 onChange={(value) => {
-                  countrySelected(value as string, product);
+                  countrySelected(value as string);
                 }}
               ></Combobox>
             )}
           </div>
           <div className="mb-3">
-            <label htmlFor="quantity" className="product-form-label">
+            <label
+              htmlFor={"quantity--" + product.id}
+              className="product-form-label"
+            >
               Quantité (en g)
             </label>
             <Input
               type="number"
               className="form-control"
-              id="quantity"
+              id={"quantity--" + product.id}
               placeholder="ex: 100"
               defaultValue={productQuantityInGrams.current}
               onInput={(event: BaseSyntheticEvent) =>
-                quantitySelected(event.target.value, product)
+                quantitySelected(event.target.value)
               }
             />
           </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
-              <label htmlFor="packaging" className="product-form-label">
+              <label
+                htmlFor={"packaging--" + product.id}
+                className="product-form-label"
+              >
                 Emballages
               </label>
               <InfoTooltip>
@@ -271,29 +283,31 @@ const ProductForm = ({
                 value: packaging.format,
               }))}
               placeholder="ex: Barquette en carton"
-              id="packaging"
+              id={"packaging--" + product.id}
               onValueChange={(values) => {
-                packagingSelected(values, product);
+                packagingSelected(values);
               }}
             ></MultiSelect>
           </div>
           <div className="mb-3 flex gap-[.5rem] items-center">
-            <label htmlFor="palm-oil">Contient de l'huile de palme</label>
+            <label htmlFor={"palm-oil--" + product.id}>
+              Contient de l'huile de palme
+            </label>
             <Checkbox
-              id="palm-oil"
-              onCheckedChange={(e) => hasPalmOilCheck(e, product)}
+              id={"palm-oil--" + product.id}
+              onCheckedChange={(e) => hasPalmOilCheck(e)}
             >
               {" "}
             </Checkbox>
           </div>
           {hasPalmOil.current && (
             <div className="mb-3 flex gap-[.5rem] items-center">
-              <label htmlFor="certified-palm-oil">
+              <label htmlFor={"certified-palm-oil--" + product.id}>
                 Huile de palme certifiée RSPO (SG / IP)
               </label>
               <Checkbox
-                id="certified-palm-oil"
-                onCheckedChange={(e) => certifiedPalmOilCheck(e, product)}
+                id={"certified-palm-oil--" + product.id}
+                onCheckedChange={(e) => certifiedPalmOilCheck(e)}
               >
                 {" "}
               </Checkbox>
@@ -302,7 +316,7 @@ const ProductForm = ({
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
               <label
-                htmlFor="threatened-species"
+                htmlFor={"threatened-species--" + product.id}
                 className="product-form-label"
               >
                 Espèces menacées
@@ -323,9 +337,9 @@ const ProductForm = ({
                 value: species.species,
               }))}
               placeholder="ex: Thon Rouge"
-              id="threatened-species"
+              id={"threatened-species--" + product.id}
               onValueChange={(values) => {
-                theratenedSpeciesSelected(values, product);
+                theratenedSpeciesSelected(values);
               }}
             ></MultiSelect>
           </div>

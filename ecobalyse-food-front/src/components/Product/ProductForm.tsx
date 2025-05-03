@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent } from "react";
+import { BaseSyntheticEvent, useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { Product } from "@/types/products";
 import { Combobox } from "../ui/combobox";
@@ -24,12 +24,18 @@ const ProductForm = ({
   const {
     categories,
     labels: productLabels,
+    faoZones,
     countries,
     packagings,
   } = useProductAttributes();
+  const hasPalmOil = useRef(false);
+  const certifiedPalmOil = useRef(false);
+  const productQuantityInGrams = useRef(100);
+  const [isFishing, setIsFishing] = useState(false);
 
   const quantitySelected = (value: string) => {
-    product.quantity = +value;
+    productQuantityInGrams.current = +value;
+    product.quantity = productQuantityInGrams.current / 1000;
     updateProduct(product);
   };
 
@@ -66,7 +72,20 @@ const ProductForm = ({
       product.origin = selectedCountry;
       updateProduct(product);
     } else {
-      console.error("Category not found");
+      console.error("Country not found");
+    }
+  };
+
+  const faoZoneSelected = (value: string) => {
+    if (!value) {
+      return;
+    }
+    const selectedFaoZone = faoZones.find((faoZone) => faoZone.ocean === value);
+    if (selectedFaoZone) {
+      product.origin = selectedFaoZone;
+      updateProduct(product);
+    } else {
+      console.error("FAO Zone not found");
     }
   };
 
@@ -85,8 +104,26 @@ const ProductForm = ({
     }
   };
 
+  const hasPalmOilCheck = (check: boolean | string) => {
+    product.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
+    hasPalmOil.current = !!check;
+    updateProduct(product);
+  };
+
+  const certifiedPalmOilCheck = (check: boolean | string) => {
+    product.nonRspoOilPalm = check ? false : hasPalmOil.current;
+    certifiedPalmOil.current = !!check;
+    updateProduct(product);
+  };
+
   const toggleActiveProduct = () => {
     product.active = !product.active;
+    updateProduct(product);
+  };
+
+  const toggleIsFishing = () => {
+    setIsFishing(!isFishing);
+    product.origin = null;
     updateProduct(product);
   };
 
@@ -136,6 +173,12 @@ const ProductForm = ({
               onValueChange={(value) => labelsSelected(value)}
             ></MultiSelect>
           </div>
+          <div className="mb-3 flex gap-[.5rem] items-center">
+            <label htmlFor="is-fishing">Produit de la pêche</label>
+            <Checkbox id="is-fishing" onCheckedChange={() => toggleIsFishing()}>
+              {" "}
+            </Checkbox>
+          </div>
           <div className="mb-3">
             <div className="flex gap-[.5rem] items-center">
               <label htmlFor="origin" className="product-form-label">
@@ -148,26 +191,38 @@ const ProductForm = ({
                 </p>
               </InfoTooltip>
             </div>
-            <Combobox
-              name="origin"
-              options={countries.map((country) => country.name)}
-              visibleOptionsLimit={20}
-              placeholder="ex: France"
-              onChange={(value) => {
-                countrySelected(value as string);
-              }}
-            ></Combobox>
+            {isFishing ? (
+              <Combobox
+                name="origin"
+                options={faoZones.map((faoZone) => faoZone.ocean)}
+                visibleOptionsLimit={20}
+                placeholder="ex: Atlantique Sud-Est"
+                onChange={(value) => {
+                  faoZoneSelected(value as string);
+                }}
+              ></Combobox>
+            ) : (
+              <Combobox
+                name="origin"
+                options={countries.map((country) => country.name)}
+                visibleOptionsLimit={20}
+                placeholder="ex: France"
+                onChange={(value) => {
+                  countrySelected(value as string);
+                }}
+              ></Combobox>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="quantity" className="product-form-label">
-              Quantité (en kg)
+              Quantité (en g)
             </label>
             <Input
               type="number"
               className="form-control"
               id="quantity"
-              placeholder="ex: 1.5"
-              defaultValue={product.quantity}
+              placeholder="ex: 100"
+              defaultValue={productQuantityInGrams.current}
               onInput={(event: BaseSyntheticEvent) =>
                 quantitySelected(event.target.value)
               }
@@ -184,16 +239,36 @@ const ProductForm = ({
               </p>
             </InfoTooltip>
           </div>
-          <MultiSelect
-            options={packagings.map((packaging) => ({
-              label: packaging.format,
-              value: packaging.format,
-            }))}
-            placeholder="ex: Barquette en carton"
-            onValueChange={(values) => {
-              packagingSelected(values);
-            }}
-          ></MultiSelect>
+          <div className="mb-3">
+            <MultiSelect
+              options={packagings.map((packaging) => ({
+                label: packaging.format,
+                value: packaging.format,
+              }))}
+              placeholder="ex: Barquette en carton"
+              id="packaging"
+              onValueChange={(values) => {
+                packagingSelected(values);
+              }}
+            ></MultiSelect>
+          </div>
+          <div className="mb-3 flex gap-[.5rem] items-center">
+            <label htmlFor="palm-oil">Contient de l'huile de palme</label>
+            <Checkbox id="palm-oil" onCheckedChange={(e) => hasPalmOilCheck(e)}>
+              {" "}
+            </Checkbox>
+          </div>
+          <div className="mb-3 flex gap-[.5rem] items-center">
+            <label htmlFor="certified-palm-oil">
+              Huile de palme certifiée RSPO (SG / IP)
+            </label>
+            <Checkbox
+              id="certified-palm-oil"
+              onCheckedChange={(e) => certifiedPalmOilCheck(e)}
+            >
+              {" "}
+            </Checkbox>
+          </div>
         </form>
       </CardContent>
       <CardFooter>

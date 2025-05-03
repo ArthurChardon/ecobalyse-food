@@ -15,9 +15,11 @@ const RecipeResults = ({
   recipeScore: {
     greenScore: GreenScore | null;
     baseScore: number;
+    meanBaseScore: number;
     productionBonus: number;
     transportBonus: number;
     packagingBonus: number;
+    threatenedBonus: number;
   } | null;
   products: Product[];
 }) => {
@@ -92,6 +94,10 @@ const RecipeResults = ({
                 <AccordionContent>
                   <div>Base score: {recipeScore?.baseScore.toFixed(1)}</div>
                   <div>
+                    Moyenne base score produits:{" "}
+                    {recipeScore?.meanBaseScore.toFixed(1)}
+                  </div>
+                  <div>
                     Bonus production: {recipeScore?.productionBonus.toFixed(0)}
                   </div>
                   <div>
@@ -99,6 +105,10 @@ const RecipeResults = ({
                   </div>
                   <div>
                     Malus emballage: {recipeScore?.packagingBonus.toFixed(0)}
+                  </div>
+                  <div>
+                    Malus espèces menacées:{" "}
+                    {recipeScore?.threatenedBonus.toFixed(0)}
                   </div>
                 </AccordionContent>
               </AccordionItem>

@@ -1,4 +1,4 @@
-import { Country } from "@/types/countries";
+import { Country, FAOZone } from "@/types/countries";
 import {
   ProductCategory,
   ProductLabel,
@@ -16,6 +16,7 @@ interface ProductAttributesContextType {
   categories: ProductCategory[];
   labels: ProductLabel[];
   countries: Country[];
+  faoZones: FAOZone[];
   packagings: ProductPackaging[];
 }
 
@@ -30,6 +31,7 @@ export function ProductAttributesProvider({
   const [labels, setLabels] = useState<ProductLabel[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [faoZones, setFaoZones] = useState<FAOZone[]>([]);
   const [packagings, setPackagings] = useState<ProductPackaging[]>([]);
 
   useEffect(() => {
@@ -132,6 +134,7 @@ export function ProductAttributesProvider({
           trackOrigin.push(countryOrigin.name);
           trackNoTransport.push(countryOrigin.name);
           newCountries.push({
+            type: "Country",
             name: countryOrigin.name,
             originScore: countryOrigin.originScore,
           });
@@ -144,6 +147,7 @@ export function ProductAttributesProvider({
           if (!country) {
             trackNoOrigin.push(countryTransport.name);
             newCountries.push({
+              type: "Country",
               name: countryTransport.name,
               transportScore: countryTransport.transportScore,
             });
@@ -179,11 +183,25 @@ export function ProductAttributesProvider({
           fileContent.packagings as ProductPackaging[];
         setPackagings(newPackagings);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching packaging:", error);
       }
     };
+
+    const fetchFAOZones = async () => {
+      const fileContent = await fetch("fao-zones-ref.json").then((res) => {
+        return res.json();
+      });
+      try {
+        const newsFAOs: FAOZone[] = fileContent.faoZones as FAOZone[];
+        setFaoZones(newsFAOs);
+      } catch (error) {
+        console.error("Error fetching faoZones:", error);
+      }
+    };
+
     fetchLabels();
     fetchCategories();
+    fetchFAOZones();
     fetchCountries();
     fetchPackagings();
   }, []);
@@ -191,6 +209,7 @@ export function ProductAttributesProvider({
   const value = {
     categories,
     labels,
+    faoZones,
     countries,
     packagings,
   };

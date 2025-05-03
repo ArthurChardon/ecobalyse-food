@@ -25,6 +25,5 @@ https://docs.score-environnemental.com/methodologie-recette/bonus-malus-recette/
 examples: https://docs.score-environnemental.com/methodologie-recette/exemples
 
 todo:
--poisson, zones de pêches, espèces menacées
--bonus/malus emballages
+-espèces menacées
 -bonus/malus saisonnalité

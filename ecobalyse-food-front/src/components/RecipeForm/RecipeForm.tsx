@@ -20,9 +20,11 @@ const RecipeForm = () => {
   const [recipeScore, setRecipeScore] = useState<{
     greenScore: GreenScore | null;
     baseScore: number;
+    meanBaseScore: number;
     productionBonus: number;
     transportBonus: number;
     packagingBonus: number;
+    threatenedBonus: number;
   } | null>(null);
 
   const recipe = useRef(new Recipe([]));
@@ -60,9 +62,11 @@ const RecipeForm = () => {
     setRecipeScore({
       greenScore: recipe.current.greenScore,
       baseScore: recipe.current.baseScore,
+      meanBaseScore: recipe.current.meanBaseScore,
       productionBonus: recipe.current.bonusScore.production,
       transportBonus: recipe.current.bonusScore.transport,
       packagingBonus: recipe.current.bonusScore.packaging,
+      threatenedBonus: recipe.current.bonusScore.speciesThreatened,
     });
   };
 

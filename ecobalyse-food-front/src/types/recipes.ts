@@ -14,6 +14,7 @@ export type RecipeBonuses = {
 export class Recipe {
   products: Product[] = [];
   baseScore = -1;
+  meanBaseScore = -1;
   bonusScore: RecipeBonuses = {
     production: 0,
     transport: 0,
@@ -47,17 +48,25 @@ export class Recipe {
       return acc + (product.category.agbScore * product.quantity) / totalMass;
     }, 0);
 
-    this.baseScore =
+    this.baseScore = Math.max(
+      0,
       100 -
-      (Math.log(10 * recipePoints + 1) /
-        Math.log(2 + 1 / (100 * Math.pow(recipePoints, 4)))) *
-        20;
+        (Math.log(10 * recipePoints + 1) /
+          Math.log(2 + 1 / (100 * Math.pow(recipePoints, 4)))) *
+          20
+    );
+
+    this.meanBaseScore = this.products.reduce((acc, product) => {
+      if (!product.category || !product.active) return acc;
+      return acc + (product.baseScore * product.quantity) / totalMass;
+    }, 0);
   }
 
   public computeBonusScore() {
     this.computeProductionBonus();
     this.computeTransportBonus();
     this.computePackagingBonus();
+    this.computeThreatMalus();
   }
 
   public computeProductionBonus() {
@@ -96,6 +105,17 @@ export class Recipe {
     this.bonusScore.packaging = recipePackagingBonus;
   }
 
+  public computeThreatMalus() {
+    this.bonusScore.speciesThreatened = 0;
+    for (let i = 0; i < this.products.length; i++) {
+      const product = this.products[i];
+      if (product.nonRspoOilPalm) {
+        this.bonusScore.speciesThreatened = -10;
+        return;
+      }
+    }
+  }
+
   public computeGreenScore() {
     const totalScore =
       this.baseScore +
@@ -103,7 +123,8 @@ export class Recipe {
         MAX_RECIPE_BONUS,
         this.bonusScore.production +
           this.bonusScore.transport +
-          this.bonusScore.packaging
+          this.bonusScore.packaging +
+          this.bonusScore.speciesThreatened
       );
     const rangedScore = Math.max(0, Math.min(100, totalScore));
 

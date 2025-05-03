@@ -1,0 +1,99 @@
+{
+  "faoZones": [
+    {
+      "faoId": "18",
+      "ocean": "Arctique",
+      "transportScore": 0
+    },
+    {
+      "faoId": "21",
+      "ocean": "Atlantique Nord-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "27",
+      "ocean": "Atlantique Nord-Est",
+      "transportScore": 50
+    },
+    {
+      "faoId": "31",
+      "ocean": "Atlantique Centre-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "34",
+      "ocean": "Atlantique Centre-Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "37",
+      "ocean": "Méditerranée",
+      "transportScore": 50
+    },
+    {
+      "faoId": "41",
+      "ocean": "Atlantique Sud-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "47",
+      "ocean": "Atlantique Sud-Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "48",
+      "ocean": "Atlantique Antarctique",
+      "transportScore": 0
+    },
+    {
+      "faoId": "51",
+      "ocean": "Océan Indien Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "57",
+      "ocean": "Océan Indien Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "58",
+      "ocean": "Océan Indien Antarctique",
+      "transportScore": 0
+    },
+    {
+      "faoId": "61",
+      "ocean": "Pacifique Nord-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "67",
+      "ocean": "Pacifique Nord-Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "71",
+      "ocean": "Pacifique Centre-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "77",
+      "ocean": "Pacifique Centre-Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "81",
+      "ocean": "Pacifique Sud-Ouest",
+      "transportScore": 0
+    },
+    {
+      "faoId": "87",
+      "ocean": "Pacifique Sud-Est",
+      "transportScore": 0
+    },
+    {
+      "faoId": "88",
+      "ocean": "Pacifique Antarctique",
+      "transportScore": 0
+    }
+  ]
+}

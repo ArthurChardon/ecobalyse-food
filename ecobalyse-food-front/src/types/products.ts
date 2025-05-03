@@ -1,5 +1,5 @@
 import { canCumulateLabel } from "@/utils/products.utils";
-import { Country } from "./countries";
+import { Origin } from "./countries";
 import {
   MAX_PRODUCT_LABEL_BONUS,
   MAX_PRODUCT_PACKAGING_MALUS,
@@ -33,8 +33,9 @@ export class Product {
   category: ProductCategory | null = null;
   packagings: ProductPackaging[] = [];
   quantity: number; // in kilograms
-  origin: Country | null = null;
+  origin: Origin | null = null;
   active: boolean;
+  nonRspoOilPalm = false;
 
   baseScore = -1;
   bonusScore: ProductBonuses = {
@@ -55,11 +56,13 @@ export class Product {
   computeBaseScoreFromCategory() {
     if (!this.category) return;
     const points = this.category.agbScore;
-    this.baseScore =
+    this.baseScore = Math.max(
+      0,
       100 -
-      (Math.log(10 * points + 1) /
-        Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
-        20;
+        (Math.log(10 * points + 1) /
+          Math.log(2 + 1 / (100 * Math.pow(points, 4)))) *
+          20
+    );
   }
 
   computeProductionBonusScore() {
@@ -80,9 +83,10 @@ export class Product {
       this.bonusScore.production = productionBonus;
     } else {
       // else compute score from origin country
-      this.bonusScore.production = this.origin?.originScore
-        ? this.origin.originScore / 10 - 5
-        : 0;
+      if (this.origin?.type === "Country")
+        this.bonusScore.production = this.origin?.originScore
+          ? this.origin.originScore / 10 - 5
+          : 0;
     }
   }
 

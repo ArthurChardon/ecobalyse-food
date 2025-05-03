@@ -1,5 +1,5 @@
 import { canCumulateLabel } from "@/utils/products.utils";
-import { Origin } from "./countries";
+import { Origin, OriginType, ThreatenedSpecies } from "./countries";
 import {
   MAX_PRODUCT_LABEL_BONUS,
   MAX_PRODUCT_PACKAGING_MALUS,
@@ -36,6 +36,7 @@ export class Product {
   origin: Origin | null = null;
   active: boolean;
   nonRspoOilPalm = false;
+  threatenedSpecies: ThreatenedSpecies[] = [];
 
   baseScore = -1;
   bonusScore: ProductBonuses = {
@@ -83,8 +84,8 @@ export class Product {
       this.bonusScore.production = productionBonus;
     } else {
       // else compute score from origin country
-      if (this.origin?.type === "Country")
-        this.bonusScore.production = this.origin?.originScore
+      if (this.origin && this.origin.type === OriginType.Country)
+        this.bonusScore.production = this.origin.originScore
           ? this.origin.originScore / 10 - 5
           : 0;
     }

@@ -1,4 +1,9 @@
-import { Country, FAOZone } from "@/types/countries";
+import {
+  Country,
+  FAOZone,
+  OriginType,
+  ThreatenedSpecies,
+} from "@/types/countries";
 import {
   ProductCategory,
   ProductLabel,
@@ -18,6 +23,7 @@ interface ProductAttributesContextType {
   countries: Country[];
   faoZones: FAOZone[];
   packagings: ProductPackaging[];
+  threatenedSpecies: ThreatenedSpecies[];
 }
 
 const ProductAttributesContext =
@@ -33,6 +39,9 @@ export function ProductAttributesProvider({
   const [countries, setCountries] = useState<Country[]>([]);
   const [faoZones, setFaoZones] = useState<FAOZone[]>([]);
   const [packagings, setPackagings] = useState<ProductPackaging[]>([]);
+  const [threatenedSpecies, setThreatenedSpecies] = useState<
+    ThreatenedSpecies[]
+  >([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -134,7 +143,7 @@ export function ProductAttributesProvider({
           trackOrigin.push(countryOrigin.name);
           trackNoTransport.push(countryOrigin.name);
           newCountries.push({
-            type: "Country",
+            type: OriginType.Country,
             name: countryOrigin.name,
             originScore: countryOrigin.originScore,
           });
@@ -147,7 +156,7 @@ export function ProductAttributesProvider({
           if (!country) {
             trackNoOrigin.push(countryTransport.name);
             newCountries.push({
-              type: "Country",
+              type: OriginType.Country,
               name: countryTransport.name,
               transportScore: countryTransport.transportScore,
             });
@@ -186,16 +195,34 @@ export function ProductAttributesProvider({
         console.error("Error fetching packaging:", error);
       }
     };
-
     const fetchFAOZones = async () => {
       const fileContent = await fetch("fao-zones-ref.json").then((res) => {
         return res.json();
       });
       try {
-        const newsFAOs: FAOZone[] = fileContent.faoZones as FAOZone[];
+        const newsFAOs: FAOZone[] = fileContent.faoZones.map(
+          (species: Omit<FAOZone, "type">) => ({
+            ...species,
+            type: OriginType.FAO,
+          })
+        );
         setFaoZones(newsFAOs);
       } catch (error) {
         console.error("Error fetching faoZones:", error);
+      }
+    };
+    const fetchThreatenedSpecies = async () => {
+      const fileContent = await fetch("threatened-species-ref.json").then(
+        (res) => {
+          return res.json();
+        }
+      );
+      try {
+        const newsThreatenedSpecies: ThreatenedSpecies[] =
+          fileContent.threatenedSpecies;
+        setThreatenedSpecies(newsThreatenedSpecies);
+      } catch (error) {
+        console.error("Error fetching threatened species:", error);
       }
     };
 
@@ -204,6 +231,7 @@ export function ProductAttributesProvider({
     fetchFAOZones();
     fetchCountries();
     fetchPackagings();
+    fetchThreatenedSpecies();
   }, []);
 
   const value = {
@@ -212,6 +240,7 @@ export function ProductAttributesProvider({
     faoZones,
     countries,
     packagings,
+    threatenedSpecies,
   };
 
   return (

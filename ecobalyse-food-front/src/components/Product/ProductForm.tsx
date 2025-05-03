@@ -27,6 +27,7 @@ const ProductForm = ({
     faoZones,
     countries,
     packagings,
+    threatenedSpecies,
   } = useProductAttributes();
   const hasPalmOil = useRef(false);
   const certifiedPalmOil = useRef(false);
@@ -101,6 +102,18 @@ const ProductForm = ({
       updateProduct(product);
     } else {
       console.error("Category not found");
+    }
+  };
+
+  const theratenedSpeciesSelected = (values: string[]) => {
+    const selectedThreatenedSpecies = threatenedSpecies.filter((species) =>
+      values.includes(species.species)
+    );
+    if (selectedThreatenedSpecies) {
+      product.threatenedSpecies = selectedThreatenedSpecies;
+      updateProduct(product);
+    } else {
+      console.error("Threatened species not found");
     }
   };
 
@@ -228,18 +241,18 @@ const ProductForm = ({
               }
             />
           </div>
-          <div className="flex gap-[.5rem] items-center">
-            <label htmlFor="packaging" className="product-form-label">
-              Emballages
-            </label>
-            <InfoTooltip>
-              <p>
-                L'emballage alimentaire a un impact selon sa matière première
-                ainsi que sa fin de vie.
-              </p>
-            </InfoTooltip>
-          </div>
           <div className="mb-3">
+            <div className="flex gap-[.5rem] items-center">
+              <label htmlFor="packaging" className="product-form-label">
+                Emballages
+              </label>
+              <InfoTooltip>
+                <p>
+                  L'emballage alimentaire a un impact selon sa matière première
+                  ainsi que sa fin de vie.
+                </p>
+              </InfoTooltip>
+            </div>
             <MultiSelect
               options={packagings.map((packaging) => ({
                 label: packaging.format,
@@ -258,16 +271,48 @@ const ProductForm = ({
               {" "}
             </Checkbox>
           </div>
-          <div className="mb-3 flex gap-[.5rem] items-center">
-            <label htmlFor="certified-palm-oil">
-              Huile de palme certifiée RSPO (SG / IP)
-            </label>
-            <Checkbox
-              id="certified-palm-oil"
-              onCheckedChange={(e) => certifiedPalmOilCheck(e)}
-            >
-              {" "}
-            </Checkbox>
+          {hasPalmOil.current && (
+            <div className="mb-3 flex gap-[.5rem] items-center">
+              <label htmlFor="certified-palm-oil">
+                Huile de palme certifiée RSPO (SG / IP)
+              </label>
+              <Checkbox
+                id="certified-palm-oil"
+                onCheckedChange={(e) => certifiedPalmOilCheck(e)}
+              >
+                {" "}
+              </Checkbox>
+            </div>
+          )}
+          <div className="mb-3">
+            <div className="flex gap-[.5rem] items-center">
+              <label
+                htmlFor="threatened-species"
+                className="product-form-label"
+              >
+                Espèces menacées
+              </label>
+              <InfoTooltip>
+                <p>
+                  La présence d'espèces non durables entraîne des malus et/ou un
+                  label E.
+                </p>
+              </InfoTooltip>
+              <InfoTooltip icon="circle-help">
+                <p>Sélectionnez les espèces présentes dans le produit.</p>
+              </InfoTooltip>
+            </div>{" "}
+            <MultiSelect
+              options={threatenedSpecies.map((species) => ({
+                label: species.species,
+                value: species.species,
+              }))}
+              placeholder="ex: Thon Rouge"
+              id="threatened-species"
+              onValueChange={(values) => {
+                theratenedSpeciesSelected(values);
+              }}
+            ></MultiSelect>
           </div>
         </form>
       </CardContent>

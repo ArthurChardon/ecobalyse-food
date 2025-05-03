@@ -2,6 +2,7 @@ import { greenScoreLetterFromScore } from "@/utils/scores.utils";
 import { Product } from "./products";
 import { GreenScore } from "./scores";
 import { MAX_RECIPE_BONUS } from "./constants";
+import { OriginType } from "./countries";
 
 export type RecipeBonuses = {
   production: number;
@@ -112,6 +113,20 @@ export class Recipe {
       if (product.nonRspoOilPalm) {
         this.bonusScore.speciesThreatened = -10;
         return;
+      }
+      if (product.threatenedSpecies) {
+        for (let j = 0; j < product.threatenedSpecies.length; j++) {
+          const threatenedSpecies = product.threatenedSpecies[j];
+          if (
+            threatenedSpecies.faoIds === "all" ||
+            (product.origin &&
+              product.origin.type === OriginType.FAO &&
+              threatenedSpecies.faoIds.includes(product.origin.faoId))
+          ) {
+            this.bonusScore.speciesThreatened = -10;
+            return;
+          }
+        }
       }
     }
   }

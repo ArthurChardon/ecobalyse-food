@@ -1,0 +1,132 @@
+{
+  "threatenedSpecies": [
+    {
+      "species": "Anchois",
+      "faoIds": [37]
+    },
+    {
+      "species": "Anguille",
+      "faoIds": "all"
+    },
+    {
+      "species": "Bar",
+      "faoIds": [37, 27, 34]
+    },
+    {
+      "species": "Bouquet",
+      "faoIds": [27]
+    },
+    {
+      "species": "Bulot",
+      "faoIds": [21]
+    },
+    {
+      "species": "Cabillaud",
+      "faoIds": [67, 61]
+    },
+    {
+      "species": "Chinchard",
+      "faoIds": [37, 27, 34, 47]
+    },
+    {
+      "species": "Coquille Saint-Jacques",
+      "faoIds": [21, 61]
+    },
+    {
+      "species": "Crabe royal",
+      "faoIds": [61]
+    },
+    {
+      "species": "Crevette rose",
+      "faoIds": [37]
+    },
+    {
+      "species": "Crevettes tropicale",
+      "faoIds": [37, 34, 31, 47, 41, 77, 87, 51]
+    },
+    {
+      "species": "Dorade rose",
+      "faoIds": [37, 27, 34]
+    },
+    {
+      "species": "Empereur",
+      "faoIds": "all"
+    },
+    {
+      "species": "Espadon",
+      "faoIds": [37, 47, 41, 48]
+    },
+    {
+      "species": "Grenadier",
+      "faoIds": "all"
+    },
+    {
+      "species": "Hoki",
+      "faoIds": [87]
+    },
+    {
+      "species": "Lingue Bleue",
+      "faoIds": [27]
+    },
+    {
+      "species": "Lompe",
+      "faoIds": [27, 21]
+    },
+    {
+      "species": "Lotte",
+      "faoIds": [37]
+    },
+    {
+      "species": "Maquereau",
+      "faoIds": [37, 34]
+    },
+    {
+      "species": "Merlu",
+      "faoIds": [37, 41, 87]
+    },
+    {
+      "species": "Rouget",
+      "faoIds": [37]
+    },
+    {
+      "species": "Sabre noir",
+      "faoIds": [37, 27]
+    },
+    {
+      "species": "Sardine",
+      "faoIds": [37]
+    },
+    {
+      "species": "Saumon",
+      "faoIds": [27, 61]
+    },
+    {
+      "species": "Sebase",
+      "faoIds": [27, 21]
+    },
+    {
+      "species": "Seiche",
+      "faoIds": [37, 71]
+    },
+    {
+      "species": "Sole",
+      "faoIds": [34]
+    },
+    {
+      "species": "Thon Germon",
+      "faoIds": [37, 77, 71, 87, 81]
+    },
+    {
+      "species": "Thon Obèse",
+      "faoIds": [27, 21, 34, 31, 47, 41, 61, 81]
+    },
+    {
+      "species": "Thon Rouge",
+      "faoIds": [37, 27, 21, 34, 31, 47, 41, 67, 61, 77, 71, 87, 81]
+    },
+    {
+      "species": "Tourteau",
+      "faoIds": [37]
+    }
+  ]
+}

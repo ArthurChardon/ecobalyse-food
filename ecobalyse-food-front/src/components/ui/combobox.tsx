@@ -24,6 +24,7 @@ function Combobox({
   placeholder = "Select one...",
   searchPlaceholder = "Search...",
   visibleOptionsLimit = 5,
+  defaultValue,
   onChange,
   ...props
 }: {
@@ -31,6 +32,7 @@ function Combobox({
   placeholder?: string;
   searchPlaceholder?: string;
   visibleOptionsLimit?: number;
+  defaultValue?: string;
   onChange?: (value: string) => void;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const [open, setOpen] = React.useState(false);
@@ -38,9 +40,9 @@ function Combobox({
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const displayedLabel = React.useMemo(() => {
-    if (!selectedOption) return "";
+    if (!selectedOption) return defaultValue ?? "";
     return options.find((option) => option === selectedOption);
-  }, [selectedOption, options]);
+  }, [selectedOption, options, defaultValue]);
   // Filter options based on search query
   const filteredOptions = React.useMemo(() => {
     if (!searchQuery) return options;

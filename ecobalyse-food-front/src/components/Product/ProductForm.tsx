@@ -29,14 +29,14 @@ const ProductForm = ({
     packagings,
     threatenedSpecies,
   } = useProductAttributes();
-  const hasPalmOil = useRef(false);
-  const certifiedPalmOil = useRef(false);
-  const productQuantityInGrams = useRef(100);
-  const [isFishing, setIsFishing] = useState(false);
+  const [isFishing, setIsFishing] = useState(product.isFishing);
+  const [hasPalmOil, setHasPalmOil] = useState(product.hasPalmOil);
+  const [certifiedPalmOil, setCertifiedPalmOil] = useState(
+    product.certifiedPalmOil
+  );
 
   const quantitySelected = (value: string) => {
-    productQuantityInGrams.current = +value;
-    product.quantity = productQuantityInGrams.current / 1000;
+    product.quantity = +value / 1000;
     updateProduct(product);
   };
 
@@ -118,14 +118,14 @@ const ProductForm = ({
   };
 
   const hasPalmOilCheck = (check: boolean | string) => {
-    product.nonRspoOilPalm = check ? !certifiedPalmOil.current : false;
-    hasPalmOil.current = !!check;
+    product.hasPalmOil = !!check;
+    setHasPalmOil(!!check);
     updateProduct(product);
   };
 
   const certifiedPalmOilCheck = (check: boolean | string) => {
-    product.nonRspoOilPalm = check ? false : hasPalmOil.current;
-    certifiedPalmOil.current = !!check;
+    product.certifiedPalmOil = !!check;
+    setCertifiedPalmOil(!!check);
     updateProduct(product);
   };
 
@@ -137,6 +137,7 @@ const ProductForm = ({
   const toggleIsFishing = () => {
     setIsFishing(!isFishing);
     product.origin = null;
+    product.isFishing = !isFishing;
     updateProduct(product);
   };
 
@@ -161,6 +162,7 @@ const ProductForm = ({
               name="category"
               id={"category--" + product.id}
               options={categories.map((category) => category.name)}
+              defaultValue={product.category?.name}
               visibleOptionsLimit={20}
               placeholder="ex: Biscuit de Savoie"
               onChange={(value) => {
@@ -168,38 +170,14 @@ const ProductForm = ({
               }}
             ></Combobox>
           </div>
-          <div className="mb-3">
-            <div className="flex gap-[.5rem] items-center">
-              <label
-                className="product-form-label"
-                htmlFor={"labels--" + product.id}
-              >
-                Labels
-              </label>
-              <InfoTooltip>
-                <p>
-                  Les labels justifient de bénéfices environnementaux sur la
-                  production du produit.
-                </p>
-              </InfoTooltip>
-            </div>
-            <MultiSelect
-              name="labels"
-              id={"labels--" + product.id}
-              placeholder="ex: Demeter, Fairtrade"
-              options={productLabels.map((label) => ({
-                label: label.name,
-                value: label.name,
-              }))}
-              onValueChange={(value) => labelsSelected(value)}
-            ></MultiSelect>
-          </div>
           <div className="mb-3 flex gap-[.5rem] items-center">
             <label htmlFor={"is-fishing--" + product.id}>
               Produit de la pêche
             </label>
             <Checkbox
+              className="ml-auto"
               id={"is-fishing--" + product.id}
+              checked={product.isFishing}
               onCheckedChange={() => toggleIsFishing()}
             >
               {" "}
@@ -226,6 +204,7 @@ const ProductForm = ({
                 name="origin"
                 options={faoZones.map((faoZone) => faoZone.ocean)}
                 visibleOptionsLimit={20}
+                defaultValue={product.origin?.ocean ?? undefined}
                 placeholder="ex: Atlantique Sud-Est"
                 onChange={(value) => {
                   faoZoneSelected(value as string);
@@ -237,6 +216,7 @@ const ProductForm = ({
                 name="origin"
                 options={countries.map((country) => country.name)}
                 visibleOptionsLimit={20}
+                defaultValue={product.origin?.name ?? undefined}
                 placeholder="ex: France"
                 onChange={(value) => {
                   countrySelected(value as string);
@@ -256,7 +236,8 @@ const ProductForm = ({
               className="form-control"
               id={"quantity--" + product.id}
               placeholder="ex: 100"
-              defaultValue={productQuantityInGrams.current}
+              min={0}
+              defaultValue={product.quantity * 1000}
               onInput={(event: BaseSyntheticEvent) =>
                 quantitySelected(event.target.value)
               }
@@ -282,6 +263,9 @@ const ProductForm = ({
                 label: packaging.format,
                 value: packaging.format,
               }))}
+              defaultValue={product.packagings.map(
+                (packaging) => packaging.format
+              )}
               placeholder="ex: Barquette en carton"
               id={"packaging--" + product.id}
               onValueChange={(values) => {
@@ -294,19 +278,33 @@ const ProductForm = ({
               Contient de l'huile de palme
             </label>
             <Checkbox
+              className="ml-auto"
               id={"palm-oil--" + product.id}
+              checked={product.hasPalmOil}
               onCheckedChange={(e) => hasPalmOilCheck(e)}
             >
               {" "}
             </Checkbox>
           </div>
-          {hasPalmOil.current && (
+          {hasPalmOil && (
             <div className="mb-3 flex gap-[.5rem] items-center">
               <label htmlFor={"certified-palm-oil--" + product.id}>
-                Huile de palme certifiée RSPO (SG / IP)
+                Huile de palme<br></br> certifiée RSPO (SG / IP)
               </label>
+              <InfoTooltip>
+                <p>
+                  La certification RSPO Segregated (SG) ou Identity Preserved
+                  (IP) garantit le caractère durable de l'huile de palme.
+                  <br></br>
+                  Les autres niveaux de certifications ne garantissent pas
+                  l'absence de déforestation et ne comptent donc pas dans le
+                  Green-score
+                </p>
+              </InfoTooltip>
               <Checkbox
+                className="ml-auto"
                 id={"certified-palm-oil--" + product.id}
+                checked={product.certifiedPalmOil}
                 onCheckedChange={(e) => certifiedPalmOilCheck(e)}
               >
                 {" "}
@@ -337,15 +335,45 @@ const ProductForm = ({
                 value: species.species,
               }))}
               placeholder="ex: Thon Rouge"
+              defaultValue={product.threatenedSpecies.map(
+                (species) => species.species
+              )}
               id={"threatened-species--" + product.id}
               onValueChange={(values) => {
                 theratenedSpeciesSelected(values);
               }}
             ></MultiSelect>
           </div>
+          <div className="mb-3">
+            <div className="flex gap-[.5rem] items-center">
+              <label
+                className="product-form-label"
+                htmlFor={"labels--" + product.id}
+              >
+                Labels
+              </label>
+              <InfoTooltip>
+                <p>
+                  Les labels justifient de bénéfices environnementaux sur la
+                  production du produit.
+                </p>
+              </InfoTooltip>
+            </div>
+            <MultiSelect
+              name="labels"
+              id={"labels--" + product.id}
+              placeholder="ex: Demeter, Fairtrade"
+              defaultValue={product.labels.map((label) => label.name)}
+              options={productLabels.map((label) => ({
+                label: label.name,
+                value: label.name,
+              }))}
+              onValueChange={(value) => labelsSelected(value)}
+            ></MultiSelect>
+          </div>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="mt-auto">
         <Button variant="destructive" onClick={() => removeProduct()}>
           Retirer produit <CircleMinus></CircleMinus>
         </Button>

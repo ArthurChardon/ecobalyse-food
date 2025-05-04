@@ -110,7 +110,7 @@ export class Recipe {
     this.bonusScore.speciesThreatened = 0;
     for (let i = 0; i < this.products.length; i++) {
       const product = this.products[i];
-      if (product.nonRspoOilPalm) {
+      if (product.hasPalmOil && !product.certifiedPalmOil) {
         this.bonusScore.speciesThreatened = -10;
         return;
       }

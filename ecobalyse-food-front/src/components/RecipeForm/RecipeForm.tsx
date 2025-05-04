@@ -1,6 +1,6 @@
 import { Product } from "@/types/products";
 import { Recipe } from "@/types/recipes";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProductForm from "../Product/ProductForm";
 import { Button } from "../ui/button";
 import { GreenScore } from "@/types/scores";
@@ -16,7 +16,13 @@ import { ChartBar, CirclePlus } from "lucide-react";
 import RecipeResults from "./RecipeResults/RecipeResults";
 
 const RecipeForm = () => {
-  const [products, setProducts] = useState<Product[]>([new Product()]);
+  const productsLocalStorageKey = "recipe-products";
+
+  const [products, setProducts] = useState<Product[]>(() => {
+    const stickyValue = window.localStorage.getItem(productsLocalStorageKey);
+    if (stickyValue !== null && JSON.parse(stickyValue).length) return [];
+    return [new Product()];
+  });
   const [recipeScore, setRecipeScore] = useState<{
     greenScore: GreenScore | null;
     baseScore: number;
@@ -30,8 +36,28 @@ const RecipeForm = () => {
   const recipe = useRef(new Recipe([]));
   const resultsComputed = useRef(false);
 
-  const addProduct = () => {
-    const newProduct = new Product();
+  useEffect(() => {
+    const stickyValue = window.localStorage.getItem(productsLocalStorageKey);
+    if (stickyValue !== null) {
+      const productsData = JSON.parse(stickyValue);
+      const newProducts: Product[] = [];
+      for (let i = 0; i < productsData.length; i++) {
+        newProducts.push(new Product(productsData[i]));
+      }
+      recipe.current.products = newProducts;
+      setProducts(newProducts);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      productsLocalStorageKey,
+      JSON.stringify(products)
+    );
+  }, [products]);
+
+  const addProduct = (product?: Product) => {
+    const newProduct = product ?? new Product();
     setProducts((prevProducts) => [...prevProducts, newProduct]);
     recipe.current.addProduct(newProduct);
   };
@@ -73,7 +99,11 @@ const RecipeForm = () => {
   return (
     <>
       <main className="p-[1rem] relative grow">
-        <div className="col-start-1 col-end-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[1rem]">
+        <h1>Votre recette</h1>
+        <div role="doc-subtitle">
+          Ajoutez chacun des produits qui composent votre recette.
+        </div>
+        <div className="col-start-1 col-end-3 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-[1rem]">
           {products.map((product) => (
             <ProductForm
               key={product.id}
@@ -146,7 +176,7 @@ const RecipeForm = () => {
             ></img>
           </div>
           <Button size="lg" onClick={() => computeScore()}>
-            Calculer le Green Score <ChartBar></ChartBar>
+            Calculer le Green-Score <ChartBar></ChartBar>
           </Button>
         </SidebarHeader>
         <SidebarContent>

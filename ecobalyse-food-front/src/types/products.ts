@@ -35,8 +35,11 @@ export class Product {
   quantity: number; // in kilograms
   origin: Origin | null = null;
   active: boolean;
-  nonRspoOilPalm = false;
   threatenedSpecies: ThreatenedSpecies[] = [];
+  labels: ProductLabel[] = [];
+  isFishing: boolean;
+  hasPalmOil: boolean;
+  certifiedPalmOil: boolean;
 
   baseScore = -1;
   bonusScore: ProductBonuses = {
@@ -46,12 +49,18 @@ export class Product {
     speciesThreatened: 0,
   };
 
-  labels: ProductLabel[] = [];
-
-  constructor() {
-    this.id = crypto.randomUUID();
-    this.quantity = 0.1;
-    this.active = true;
+  constructor(product?: Product) {
+    this.id = product ? product.id : crypto.randomUUID();
+    this.category = product ? product.category : null;
+    this.packagings = product ? product.packagings : [];
+    this.quantity = product ? product.quantity : 0.1;
+    this.origin = product ? product.origin : null;
+    this.active = product ? product.active : true;
+    this.threatenedSpecies = product ? product.threatenedSpecies : [];
+    this.labels = product ? product.labels : [];
+    this.isFishing = product ? product.isFishing : false;
+    this.hasPalmOil = product ? product.hasPalmOil : false;
+    this.certifiedPalmOil = product ? product.certifiedPalmOil : false;
   }
 
   computeBaseScoreFromCategory() {

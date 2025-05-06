@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useRef, useState } from "react";
+import { BaseSyntheticEvent, useState } from "react";
 import { Input } from "../ui/input";
 import { Product } from "@/types/products";
 import { Combobox } from "../ui/combobox";
@@ -31,9 +31,6 @@ const ProductForm = ({
   } = useProductAttributes();
   const [isFishing, setIsFishing] = useState(product.isFishing);
   const [hasPalmOil, setHasPalmOil] = useState(product.hasPalmOil);
-  const [certifiedPalmOil, setCertifiedPalmOil] = useState(
-    product.certifiedPalmOil
-  );
 
   const quantitySelected = (value: string) => {
     product.quantity = +value / 1000;
@@ -125,7 +122,6 @@ const ProductForm = ({
 
   const certifiedPalmOilCheck = (check: boolean | string) => {
     product.certifiedPalmOil = !!check;
-    setCertifiedPalmOil(!!check);
     updateProduct(product);
   };
 
@@ -204,6 +200,7 @@ const ProductForm = ({
                 name="origin"
                 options={faoZones.map((faoZone) => faoZone.ocean)}
                 visibleOptionsLimit={20}
+                //@ts-expect-error review Types to avoid this error
                 defaultValue={product.origin?.ocean ?? undefined}
                 placeholder="ex: Atlantique Sud-Est"
                 onChange={(value) => {
@@ -216,6 +213,7 @@ const ProductForm = ({
                 name="origin"
                 options={countries.map((country) => country.name)}
                 visibleOptionsLimit={20}
+                //@ts-expect-error review Types to avoid this error
                 defaultValue={product.origin?.name ?? undefined}
                 placeholder="ex: France"
                 onChange={(value) => {
